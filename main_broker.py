@@ -188,7 +188,7 @@ def getClientByName(client_name):
 def interpretData(payload):
     client = getClientByName(payload["source"])
     if client == None:
-        print("Client not found: ",payload["source"])
+        print("Client not found LOL: ",payload["source"])
         print("Attempting to create new client...")
         client = initializeClient(payload["source"])
         if client == None:
