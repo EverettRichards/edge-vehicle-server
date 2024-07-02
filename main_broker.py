@@ -135,10 +135,6 @@ def getVerdict():
     NOW = time.time()
     if (NOW - last_verdict_time) < settings["verdict_min_refresh_time"]:
         return
-    if settings["show_verbose_output"]:
-        print("-"*40)
-        print("Getting verdict for t =",NOW)
-        print("-"*40)
     
     # Refresh the last verdict time
     last_verdict_time = NOW
@@ -148,6 +144,12 @@ def getVerdict():
 
     # Clear the screen
     print("\033[H\033[J", end="")
+
+    # Display separator for verdict presentation
+    if settings["show_verbose_output"]:
+        print("-"*40)
+        print("Getting verdict for t =",NOW)
+        print("-"*40)
 
     # Count the number of each decision made
     for client in activeClients:
