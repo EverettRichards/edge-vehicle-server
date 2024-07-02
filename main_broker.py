@@ -188,13 +188,11 @@ def getClientByName(client_name):
 def interpretData(payload):
     client = getClientByName(payload["source"])
     if client == None:
-        print("Client not found LOL: ",payload["source"])
-        print("Attempting to create new client...")
+        print("Attempting to create new client,",payload["source"])
         client = initializeClient(payload["source"])
         if client == None:
             print("Failed to create new client")
             return
-        print(f"Successfully made new client, {client.getName()}!")
     decision = Decision(payload["label"],payload["confidence"],time.time())
     client.setDecision(decision)
     if time.time() - last_verdict_time > settings["verdict_min_refresh_time"]:
