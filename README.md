@@ -1,4 +1,5 @@
 CLIENT CODE (For edge devices): https://github.com/EverettRichards/edge-vehicle-client
+
 SERVER CODE (For edge servers): https://github.com/EverettRichards/edge-vehicle-server
 
 Author: Everett Richards
