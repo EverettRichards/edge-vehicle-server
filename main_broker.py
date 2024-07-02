@@ -16,7 +16,7 @@ settings = {
     "oldest_allowable_data": 2.5, # Max number of seconds before data is considered too old
     "show_verbose_output": True,
     "reputation_increment": 0.025, # Amount to increment or decrement client reputation by
-    "min_reputation": 0.5, # Minimum reputation value
+    "min_reputation": 0.3, # Minimum reputation value
 }
 
 main_client = None
@@ -139,10 +139,15 @@ def getVerdict():
         print("-"*40)
         print("Getting verdict for t =",NOW)
         print("-"*40)
+    
     # Refresh the last verdict time
     last_verdict_time = NOW
+
     # Initialize a blank Default Dictionary
     counts = dd(int)
+
+    # Clear the screen
+    print("\033[H\033[J", end="")
 
     # Count the number of each decision made
     for client in activeClients:
