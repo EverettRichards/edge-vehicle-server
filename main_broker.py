@@ -13,9 +13,10 @@ settings = {
     "broker_IP":broker_IP,
     "port_Num":port_Num,
     "verdict_min_refresh_time": 2.0, # Min number of seconds before a new verdict can be submitted
-    "oldest_allowable_data": 2.0, # Max number of seconds before data is considered too old
+    "oldest_allowable_data": 2.5, # Max number of seconds before data is considered too old
     "show_verbose_output": True,
-    "reputation_increment": 0.025 # Amount to increment or decrement client reputation by
+    "reputation_increment": 0.025, # Amount to increment or decrement client reputation by
+    "min_reputation": 0.5, # Minimum reputation value
 }
 
 main_client = None
@@ -95,7 +96,7 @@ class Client:
             self.reputation += settings["reputation_increment"]
         else:
             self.reputation -= settings["reputation_increment"]
-        self.reputation = clamp(self.reputation,0.1,1)
+        self.reputation = clamp(self.reputation,settings["min_reputation"],1)
 
     def getName(self):
         return self.name
@@ -114,6 +115,7 @@ def initializeClient(client_name):
         new_client = Client(client_name)
         activeClients.append(new_client)
         print("Added client: ",client_name)
+        return new_client
     except:
         print("Failed to add client. Client already exists: ",client_name)
 
@@ -135,7 +137,7 @@ def getVerdict():
         return
     if settings["show_verbose_output"]:
         print("-"*40)
-        print("Getting verdict for t=",NOW)
+        print("Getting verdict for t =",NOW)
         print("-"*40)
     # Refresh the last verdict time
     last_verdict_time = NOW
@@ -152,7 +154,7 @@ def getVerdict():
         counts[decision.getLabel()] += decision.getConfidence() * client.getReputation()
         # Verbose output
         if settings["show_verbose_output"]:
-            print(f"    @{client.getName()} (rep={client.getReputation():.3f}): {decision.getLabel()} (conf={(decision.getConfidence()*100):.1f}%)")
+            print(f"---@{client.getName()} (rep={client.getReputation():.3f}): {decision.getLabel()} (conf={(decision.getConfidence()*100):.1f}%)")
     
     # Determine the most confident decision
     verdict = f"{max(counts,key=counts.get)}"
@@ -187,7 +189,12 @@ def interpretData(payload):
     client = getClientByName(payload["source"])
     if client == None:
         print("Client not found: ",payload["source"])
-        return
+        print("Attempting to create new client...")
+        client = initializeClient(payload["source"])
+        if client == None:
+            print("Failed to create new client")
+            return
+        print(f"Successfully made new client, {client.getName()}!")
     decision = Decision(payload["label"],payload["confidence"],time.time())
     client.setDecision(decision)
     if time.time() - last_verdict_time > settings["verdict_min_refresh_time"]:
