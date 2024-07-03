@@ -43,6 +43,7 @@ def on_connect(CLIENT, userdata, flags, rc):
     CLIENT.subscribe("end_client")
     # Subscribe to view incoming data from clients
     CLIENT.subscribe("data_V2B")
+    CLIENT.subscribe("request_config")
 
 activeClients = []
 
@@ -107,6 +108,13 @@ class Client:
     def __repr__(self):
         return self.name + ": " + str(self.decision)
 
+config_file = open("config.json","r")
+config_str = config_file.read()
+config_file.close()
+
+def issueConfig():
+    CLIENT.publish("config",payload=config_str,qos=0,retain=False)
+
 def initializeClient(client_name):
     try:
         for client in activeClients:
@@ -114,6 +122,7 @@ def initializeClient(client_name):
                 raise Exception("Client already exists")
         new_client = Client(client_name)
         activeClients.append(new_client)
+        issueConfig()
         print("Added client: ",client_name)
         return new_client
     except:
@@ -221,6 +230,8 @@ def on_message(CLIENT, userdata, msg):
     elif msg.topic == "data_V2B":
         # Interpret the data
         interpretData(payload)
+    elif msg.topic == "request_config":
+        issueConfig()
 
 CLIENT = mqtt.Client()
 CLIENT.on_connect = on_connect
