@@ -3,11 +3,13 @@ import paho.mqtt.client as mqtt
 import json
 from collections import defaultdict as dd
 import time
-
+import numpy as np
 
 broker_IP = "localhost"
 port_Num = 1883
 last_verdict_time = 0.0
+
+
 
 settings = {
     "broker_IP":broker_IP,
@@ -108,12 +110,16 @@ class Client:
     def __repr__(self):
         return self.name + ": " + str(self.decision)
 
-config_file = open("config.json","r")
-config_str = config_file.read()
-config_file.close()
+client_config_file = open("client_config.json","r")
+client_config_str = client_config_file.read()
+client_config_data = json.loads(client_config_str)
+client_config_file.close()
+
+object_locations = client_config_data["object_locations"]
+vehicle_locations = client_config_data["vehicle_locations"]
 
 def issueConfig():
-    CLIENT.publish("config",payload=config_str,qos=0,retain=False)
+    CLIENT.publish("config",payload=client_config_str,qos=0,retain=False)
 
 def initializeClient(client_name):
     try:
@@ -148,10 +154,12 @@ def getVerdict():
     # Refresh the last verdict time
     last_verdict_time = NOW
 
-    # Initialize a blank Default Dictionary
+    # Initialize a blank Default Dictionary to count occurrences of each decision
     counts = dd(int)
 
-    # Clear the screen
+    object_counts = [dd(int) for _ in range(len(object_locations))]
+
+    # Clear the output log
     print("\033[H\033[J", end="")
 
     # Display separator for verdict presentation
@@ -166,28 +174,43 @@ def getVerdict():
         # Throw out expired decisions
         if decision == None or decision.getTimeStamp() < NOW - settings["oldest_allowable_data"]:
             continue
+        # Get the dictionary of detected objects
+        detected_objects = decision["object_list"]
         # Add the decision, using confidence level as the weight
-        counts[decision.getLabel()] += decision.getConfidence() * client.getReputation()
+        #counts[decision.getLabel()] += decision.getConfidence() * client.getReputation()
+        ##########################################
+        # NEW LOGIC
+        for obj in object_locations.values():
+            dd = object_counts[obj["index"]]
+            chosen_obj = detected_objects[obj["name"]]
+            dd[chosen_obj[0]] += chosen_obj[1] * client.getReputation() * (1/np.log(chosen_obj[2])) # Confidence * Reputation * (1/distance)
+        ##########################################
         # Verbose output
         if settings["show_verbose_output"]:
             print(f"---@{client.getName()} (rep={client.getReputation():.3f}): {decision.getLabel()} (conf={(decision.getConfidence()*100):.1f}%)")
     
-    # Determine the most confident decision
-    verdict = f"{max(counts,key=counts.get)}"
+    # Determine the most confident decisions for each object
+    verdicts = {}
+    for obj,dd in object_counts.items():
+        verdicts[obj] = max(dd,key=dd.get)
+    #verdict = f"{max(counts,key=counts.get)}"
     
     # Publish the verdict
-    publish(main_client,"verdict",{"message":verdict})
-    print("Submitted verdict: ",verdict)
+    publish(main_client,"verdict",{"message":verdicts})
+    print("Submitted verdict: ",verdicts)
 
     # Update client reputations using Client object methods
     wrong_decision_count = 0
     for client in activeClients:
         if client.getDecision() == None:
             continue
-        client.noteOutcome(client.getDecision().getLabel(),verdict)
-        if client.getDecision().getLabel() != verdict:
-            wrong_decision_count += 1
-    print("# of clients who had their minds changed: ",wrong_decision_count)
+        for obj in object_locations.keys():
+            true_verdict = verdicts[obj]
+            client_verdict = client.getDecision()["object_list"][obj][0]
+            client.noteOutcome(client_verdict,true_verdict)
+            if client_verdict != true_verdict:
+                wrong_decision_count += 1
+    print(f"# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
 
 def didEveryoneDecide():
     for client in activeClients:
@@ -203,14 +226,14 @@ def getClientByName(client_name):
 
 def interpretData(payload):
     client = getClientByName(payload["source"])
+    payload["timestamp"] = time.time()
     if client == None:
         print("Attempting to create new client,",payload["source"])
         client = initializeClient(payload["source"])
         if client == None:
             print("Failed to create new client")
             return
-    decision = Decision(payload["label"],payload["confidence"],time.time())
-    client.setDecision(decision)
+    client.setDecision(payload)
     if time.time() - last_verdict_time > settings["verdict_min_refresh_time"]:
         getVerdict()
 
