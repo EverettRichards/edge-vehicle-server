@@ -154,9 +154,7 @@ def getVerdict():
     # Refresh the last verdict time
     last_verdict_time = NOW
 
-    # Initialize a blank Default Dictionary to count occurrences of each decision
-    counts = dd(int)
-
+    # Initialize a list of blank Default Dictionaries to count occurrences of each decision
     object_counts = [dd(int) for _ in range(len(object_locations))]
 
     # Clear the output log
@@ -187,7 +185,10 @@ def getVerdict():
         ##########################################
         # Verbose output
         if settings["show_verbose_output"]:
-            print(f"---@{client.getName()} (rep={client.getReputation():.3f}): {decision.getLabel()} (conf={(decision.getConfidence()*100):.1f}%)")
+            output_str = f"---@{client.getName()} (rep={client.getReputation():.3f}):"
+            for obj in detected_objects.keys():
+                output_str += f" {obj}={detected_objects[obj][0]} ({detected_objects[obj][1]:.1f}%) ..."
+            print(output_str)
     
     # Determine the most confident decisions for each object
     verdicts = {}
@@ -197,7 +198,10 @@ def getVerdict():
     
     # Publish the verdict
     publish(main_client,"verdict",{"message":verdicts})
-    print("Submitted verdict: ",verdicts)
+    print("Submitted verdict:",verdicts)
+
+    for obj in verdicts.keys():
+        print(f"----Object '{obj}' is: '{verdicts[obj]}'")
 
     # Update client reputations using Client object methods
     wrong_decision_count = 0
