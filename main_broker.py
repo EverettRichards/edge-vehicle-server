@@ -184,7 +184,7 @@ def getVerdict():
         for obj in object_locations.values():
             this_dd = object_counts[obj["index"]]
             chosen_obj = detected_objects[obj["name"]] or NoneObject
-            this_dd[chosen_obj[0]] += chosen_obj[1] * client.getReputation() * (1/np.log(chosen_obj[2])) # Confidence * Reputation * (1/distance)
+            this_dd[chosen_obj[0]] += chosen_obj[1] * client.getReputation() * (1/np.log(chosen_obj[2])) # Confidence * Reputation * (1/log(distance))
         ##########################################
         # Verbose output
         if settings["show_verbose_output"]:

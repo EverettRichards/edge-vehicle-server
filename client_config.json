@@ -13,28 +13,28 @@
 
         "A": {
             "name": "A",
-            "index": 1,
+            "index": 0,
             "x": 1.0,
             "y": 2.0
         },
 
         "B": {
             "name": "B",
-            "index": 2,
+            "index": 1,
             "x": 1.0,
             "y": 2.0
         },
 
         "C": {
             "name": "C",
-            "index": 3,
+            "index": 2,
             "x": 1.0,
             "y": 2.0
         },
 
         "D": {
             "name": "D",
-            "index": 4,
+            "index": 3,
             "x": 1.0,
             "y": 2.0
         }
