@@ -9,8 +9,6 @@ broker_IP = "localhost"
 port_Num = 1883
 last_verdict_time = 0.0
 
-
-
 settings = {
     "broker_IP":broker_IP,
     "port_Num":port_Num,
@@ -21,33 +19,16 @@ settings = {
     "min_reputation": 0.3, # Minimum reputation value
 }
 
-main_client = None
+client_config_file = open("client_config.json","r")
+client_config_str = client_config_file.read()
+client_config_data = json.loads(client_config_str)
+client_config_file.close()
 
-def clamp(value,min_value=0.0,max_value=1.0):
-    return max(min_value, min(value, max_value))
+object_locations = client_config_data["object_locations"]
+vehicle_locations = client_config_data["vehicle_locations"]
 
-def encodePayload(data):
-    data["source"] = "main_broker"
-    output = bytearray()
-    output.extend(map(ord,json.dumps(data)))
-    return output
+NoneObject = ["None",0.1,0.0]
 
-def decodePayload(string_data):
-    return json.loads(string_data)
-
-def publish(CLIENT,topic,message):
-    CLIENT.publish(topic,payload=encodePayload(message),qos=0,retain=False)
-
-def on_connect(CLIENT, userdata, flags, rc):
-    print(f"Connected with result code {rc}")
-    # Subscribe to view incoming client messages
-    CLIENT.subscribe("new_client")
-    CLIENT.subscribe("end_client")
-    # Subscribe to view incoming data from clients
-    CLIENT.subscribe("data_V2B")
-    CLIENT.subscribe("request_config")
-
-activeClients = []
 
 class Decision:
     def __init__(self,decision_label,confidence,time_stamp):
@@ -110,13 +91,34 @@ class Client:
     def __repr__(self):
         return self.name + ": " + str(self.decision)
 
-client_config_file = open("client_config.json","r")
-client_config_str = client_config_file.read()
-client_config_data = json.loads(client_config_str)
-client_config_file.close()
 
-object_locations = client_config_data["object_locations"]
-vehicle_locations = client_config_data["vehicle_locations"]
+main_client = None
+
+def clamp(value,min_value=0.0,max_value=1.0):
+    return max(min_value, min(value, max_value))
+
+def encodePayload(data):
+    data["source"] = "main_broker"
+    output = bytearray()
+    output.extend(map(ord,json.dumps(data)))
+    return output
+
+def decodePayload(string_data):
+    return json.loads(string_data)
+
+def publish(CLIENT,topic,message):
+    CLIENT.publish(topic,payload=encodePayload(message),qos=0,retain=False)
+
+def on_connect(CLIENT, userdata, flags, rc):
+    print(f"Connected with result code {rc}")
+    # Subscribe to view incoming client messages
+    CLIENT.subscribe("new_client")
+    CLIENT.subscribe("end_client")
+    # Subscribe to view incoming data from clients
+    CLIENT.subscribe("data_V2B")
+    CLIENT.subscribe("request_config")
+
+activeClients = []
 
 def issueConfig():
     CLIENT.publish("config",payload=client_config_str,qos=0,retain=False)
@@ -181,7 +183,7 @@ def getVerdict():
         # NEW LOGIC
         for obj in object_locations.values():
             this_dd = object_counts[obj["index"]]
-            chosen_obj = detected_objects[obj["name"]]
+            chosen_obj = detected_objects[obj["name"]] or NoneObject
             this_dd[chosen_obj[0]] += chosen_obj[1] * client.getReputation() * (1/np.log(chosen_obj[2])) # Confidence * Reputation * (1/distance)
         ##########################################
         # Verbose output
