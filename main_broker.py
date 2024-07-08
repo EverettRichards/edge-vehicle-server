@@ -216,7 +216,13 @@ def getVerdict():
             continue
         for obj in object_locations.keys():
             true_verdict = verdicts[obj]
-            client_verdict = client.getDecision()["object_list"][obj][0]
+
+            client_verdict = None
+            if client.getDecision()["object_list"][obj] == None:
+                client_verdict = NoneObject[0]
+            else:
+                client_verdict = client.getDecision()["object_list"][obj][0]
+
             client.noteOutcome(client_verdict,true_verdict)
             if client_verdict != true_verdict:
                 wrong_decision_count += 1
