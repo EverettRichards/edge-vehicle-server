@@ -171,7 +171,7 @@ def getVerdict():
     for client in activeClients:
         decision = client.getDecision()
         # Throw out expired decisions
-        if decision == None or decision.getTimeStamp() < NOW - settings["oldest_allowable_data"]:
+        if decision == None or decision["timestamp"] < NOW - settings["oldest_allowable_data"]:
             continue
         # Get the dictionary of detected objects
         detected_objects = decision["object_list"]
