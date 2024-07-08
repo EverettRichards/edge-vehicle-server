@@ -12,11 +12,11 @@ last_verdict_time = 0.0
 settings = {
     "broker_IP":broker_IP,
     "port_Num":port_Num,
-    "verdict_min_refresh_time": 2.0, # Min number of seconds before a new verdict can be submitted
+    "verdict_min_refresh_time": 0.5, # Min number of seconds before a new verdict can be submitted
     "oldest_allowable_data": 2.5, # Max number of seconds before data is considered too old
     "show_verbose_output": True,
-    "reputation_increment": 0.025, # Amount to increment or decrement client reputation by
-    "min_reputation": 0.3, # Minimum reputation value
+    "reputation_increment": 0.01, # Amount to increment or decrement client reputation by
+    "min_reputation": 0.35, # Minimum reputation value
 }
 
 client_config_file = open("client_config.json","r")
@@ -204,10 +204,12 @@ def getVerdict():
     
     # Publish the verdict
     publish(main_client,"verdict",{"message":verdicts})
-    print("Submitted verdict:",verdicts)
 
-    for obj in verdicts.keys():
-        print(f"----Object '{obj}' is: '{verdicts[obj]}'")
+    if settings["show_verbose_output"]:
+        for obj in verdicts.keys():
+            print(f"---$Object '{obj}' is: '{verdicts[obj]}'")
+    else:
+        print("Submitted verdict:",verdicts)
 
     # Update client reputations using Client object methods
     wrong_decision_count = 0
