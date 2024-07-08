@@ -180,9 +180,9 @@ def getVerdict():
         ##########################################
         # NEW LOGIC
         for obj in object_locations.values():
-            dd = object_counts[obj["index"]]
+            this_dd = object_counts[obj["index"]]
             chosen_obj = detected_objects[obj["name"]]
-            dd[chosen_obj[0]] += chosen_obj[1] * client.getReputation() * (1/np.log(chosen_obj[2])) # Confidence * Reputation * (1/distance)
+            this_dd[chosen_obj[0]] += chosen_obj[1] * client.getReputation() * (1/np.log(chosen_obj[2])) # Confidence * Reputation * (1/distance)
         ##########################################
         # Verbose output
         if settings["show_verbose_output"]:
@@ -193,8 +193,8 @@ def getVerdict():
     
     # Determine the most confident decisions for each object
     verdicts = {}
-    for obj,dd in object_counts.items():
-        verdicts[obj] = max(dd,key=dd.get)
+    for obj,this_dd in object_counts.items():
+        verdicts[obj] = max(this_dd,key=this_dd.get)
     #verdict = f"{max(counts,key=counts.get)}"
     
     # Publish the verdict
