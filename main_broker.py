@@ -193,7 +193,7 @@ def getVerdict():
             output_str = f"---@{client.getName()} (rep={client.getReputation():.3f}):"
             for name,obj in detected_objects.items():
                 if not obj: output_str += f" {name}=None ..."
-                else: output_str += f" {name}={obj[0]} ({obj[1]:.1f}%) ..."
+                else: output_str += f" {name}={obj[0]} ({obj[1]*100:.1f}%) ..."
             print(output_str)
     
     # Determine the most confident decisions for each object
