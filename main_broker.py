@@ -189,8 +189,8 @@ def getVerdict():
         # Verbose output
         if settings["show_verbose_output"]:
             output_str = f"---@{client.getName()} (rep={client.getReputation():.3f}):"
-            for obj in detected_objects.keys():
-                output_str += f" {obj}={detected_objects[obj][0]} ({detected_objects[obj][1]:.1f}%) ..."
+            for name,obj in detected_objects.items():
+                output_str += f" {name}={obj[0]} ({obj[1]:.1f}%) ..."
             print(output_str)
     
     # Determine the most confident decisions for each object
