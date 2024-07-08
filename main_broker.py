@@ -158,7 +158,9 @@ def getVerdict():
 
     # Initialize a list of blank Default Dictionaries to count occurrences of each decision
     global dd
-    object_counts = [dd(int) for _ in range(len(object_locations))]
+    object_counts = {}
+    for obj in object_locations.keys():
+        object_counts[obj] = dd(int)
 
     # Clear the output log
     print("\033[H\033[J", end="")
@@ -181,9 +183,9 @@ def getVerdict():
         #counts[decision.getLabel()] += decision.getConfidence() * client.getReputation()
         ##########################################
         # NEW LOGIC
-        for obj in object_locations.values():
-            this_dd = object_counts[obj["index"]]
-            chosen_obj = detected_objects[obj["name"]] or NoneObject
+        for obj in object_locations.keys():
+            this_dd = object_counts[obj]
+            chosen_obj = detected_objects[obj] or NoneObject
             this_dd[chosen_obj[0]] += chosen_obj[1] * client.getReputation() * (1/np.log(chosen_obj[2])) # Confidence * Reputation * (1/log(distance))
         ##########################################
         # Verbose output
