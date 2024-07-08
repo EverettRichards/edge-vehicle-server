@@ -155,6 +155,7 @@ def getVerdict():
     last_verdict_time = NOW
 
     # Initialize a list of blank Default Dictionaries to count occurrences of each decision
+    global dd
     object_counts = [dd(int) for _ in range(len(object_locations))]
 
     # Clear the output log
