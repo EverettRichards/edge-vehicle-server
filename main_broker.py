@@ -229,7 +229,7 @@ def getVerdict():
             client.noteOutcome(client_verdict,true_verdict)
             if client_verdict != true_verdict:
                 wrong_decision_count += 1
-    prPurple(f"# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
+    prPurple(f"\n# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
 
 def didEveryoneDecide():
     for client in activeClients:
