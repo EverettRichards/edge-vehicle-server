@@ -169,7 +169,7 @@ def getVerdict():
     # Display separator for verdict presentation
     if settings["show_verbose_output"]:
         print("-"*40)
-        prGreen("Getting verdict for t ="+str(NOW))
+        print("Getting verdict for t ="+str(NOW))
         print("-"*40)
 
     # Count the number of each decision made
@@ -191,7 +191,7 @@ def getVerdict():
         ##########################################
         # Verbose output
         if settings["show_verbose_output"]:
-            output_str = f"---@{client.getName()} (rep={client.getReputation():.3f}):"
+            output_str = f"@{client.getName()} (rep={client.getReputation():.3f}):"
             for name,obj in detected_objects.items():
                 if not obj: output_str += f" {name}=None ..."
                 else: output_str += f" {name}={obj[0]} ({obj[1]*100:.1f}%) ..."
@@ -208,7 +208,7 @@ def getVerdict():
 
     if settings["show_verbose_output"]:
         for obj in verdicts.keys():
-            prGreen(f"---$Object '{obj}' is: '{verdicts[obj]}'")
+            prGreen(f"$Object '{obj}' is: '{verdicts[obj]}'")
     else:
         prGreen("Submitted verdict: "+verdicts)
 
