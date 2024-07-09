@@ -5,20 +5,11 @@ from collections import defaultdict as dd
 import time
 import numpy as np
 from colors import *
+from server_config import config as settings
 
 broker_IP = "localhost"
 port_Num = 1883
 last_verdict_time = 0.0
-
-settings = {
-    "broker_IP":broker_IP,
-    "port_Num":port_Num,
-    "verdict_min_refresh_time": 0.5, # Min number of seconds before a new verdict can be submitted
-    "oldest_allowable_data": 2.5, # Max number of seconds before data is considered too old
-    "show_verbose_output": True,
-    "reputation_increment": 0.01, # Amount to increment or decrement client reputation by
-    "min_reputation": 0.35, # Minimum reputation value
-}
 
 client_config_file = open("client_config.json","r")
 client_config_str = client_config_file.read()
