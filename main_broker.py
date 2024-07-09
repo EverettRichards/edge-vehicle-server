@@ -206,6 +206,7 @@ def getVerdict():
     # Publish the verdict
     publish(main_client,"verdict",{"message":verdicts})
 
+    print() # Get that nice, sweet newline!
     if settings["show_verbose_output"]:
         for obj in verdicts.keys():
             prGreen(f"$Object '{obj}' is: '{verdicts[obj]}'")
