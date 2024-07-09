@@ -4,6 +4,7 @@ import json
 from collections import defaultdict as dd
 import time
 import numpy as np
+from color import *
 
 broker_IP = "localhost"
 port_Num = 1883
@@ -110,7 +111,7 @@ def publish(CLIENT,topic,message):
     CLIENT.publish(topic,payload=encodePayload(message),qos=0,retain=False)
 
 def on_connect(CLIENT, userdata, flags, rc):
-    print(f"Connected with result code {rc}")
+    prCyan(f"Connected with result code {rc}")
     # Subscribe to view incoming client messages
     CLIENT.subscribe("new_client")
     CLIENT.subscribe("end_client")
@@ -131,21 +132,21 @@ def initializeClient(client_name):
         new_client = Client(client_name)
         activeClients.append(new_client)
         issueConfig()
-        print("Added client: ",client_name)
+        prCyan("Added client: ",client_name)
         return new_client
     except:
-        print("Failed to add client. Client already exists: ",client_name)
+        prRed("Failed to add client. Client already exists: ",client_name)
 
 def removeClient(client_name):
     try:
         for client in activeClients:
             if client.name == client_name:
                 activeClients.remove(client)
-                print("Removed client: ",client_name)
+                prCyan("Removed client: ",client_name)
                 return
         raise Exception("Client not found")
     except:
-        print("Failed to remove client. Client not found: ",client_name)
+        prRed("Failed to remove client. Client not found: ",client_name)
 
 def getVerdict():
     global last_verdict_time
@@ -168,7 +169,7 @@ def getVerdict():
     # Display separator for verdict presentation
     if settings["show_verbose_output"]:
         print("-"*40)
-        print("Getting verdict for t =",NOW)
+        prGreen("Getting verdict for t =",NOW)
         print("-"*40)
 
     # Count the number of each decision made
@@ -194,7 +195,7 @@ def getVerdict():
             for name,obj in detected_objects.items():
                 if not obj: output_str += f" {name}=None ..."
                 else: output_str += f" {name}={obj[0]} ({obj[1]*100:.1f}%) ..."
-            print(output_str)
+            prYellow(output_str)
     
     # Determine the most confident decisions for each object
     verdicts = {}
@@ -207,9 +208,9 @@ def getVerdict():
 
     if settings["show_verbose_output"]:
         for obj in verdicts.keys():
-            print(f"---$Object '{obj}' is: '{verdicts[obj]}'")
+            prGreen(f"---$Object '{obj}' is: '{verdicts[obj]}'")
     else:
-        print("Submitted verdict:",verdicts)
+        prGreen("Submitted verdict:",verdicts)
 
     # Update client reputations using Client object methods
     wrong_decision_count = 0
@@ -228,7 +229,7 @@ def getVerdict():
             client.noteOutcome(client_verdict,true_verdict)
             if client_verdict != true_verdict:
                 wrong_decision_count += 1
-    print(f"# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
+    prPurple(f"# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
 
 def didEveryoneDecide():
     for client in activeClients:
@@ -246,10 +247,10 @@ def interpretData(payload):
     client = getClientByName(payload["source"])
     payload["timestamp"] = time.time()
     if client == None:
-        print("Attempting to create new client,",payload["source"])
+        prCyan("Attempting to create new client,",payload["source"])
         client = initializeClient(payload["source"])
         if client == None:
-            print("Failed to create new client")
+            prRed("Failed to create new client")
             return
     client.setDecision(payload)
     if time.time() - last_verdict_time > settings["verdict_min_refresh_time"]:
