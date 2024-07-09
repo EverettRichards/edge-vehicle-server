@@ -132,21 +132,21 @@ def initializeClient(client_name):
         new_client = Client(client_name)
         activeClients.append(new_client)
         issueConfig()
-        prCyan("Added client: ",client_name)
+        prCyan("Added client: "+client_name)
         return new_client
     except:
-        prRed("Failed to add client. Client already exists: ",client_name)
+        prRed("Failed to add client. Client already exists: "+client_name)
 
 def removeClient(client_name):
     try:
         for client in activeClients:
             if client.name == client_name:
                 activeClients.remove(client)
-                prCyan("Removed client: ",client_name)
+                prCyan("Removed client: "+client_name)
                 return
         raise Exception("Client not found")
     except:
-        prRed("Failed to remove client. Client not found: ",client_name)
+        prRed("Failed to remove client. Client not found: "+client_name)
 
 def getVerdict():
     global last_verdict_time
@@ -169,7 +169,7 @@ def getVerdict():
     # Display separator for verdict presentation
     if settings["show_verbose_output"]:
         print("-"*40)
-        prGreen("Getting verdict for t =",NOW)
+        prGreen("Getting verdict for t ="+str(NOW))
         print("-"*40)
 
     # Count the number of each decision made
@@ -210,7 +210,7 @@ def getVerdict():
         for obj in verdicts.keys():
             prGreen(f"---$Object '{obj}' is: '{verdicts[obj]}'")
     else:
-        prGreen("Submitted verdict:",verdicts)
+        prGreen("Submitted verdict: "+verdicts)
 
     # Update client reputations using Client object methods
     wrong_decision_count = 0
@@ -247,7 +247,7 @@ def interpretData(payload):
     client = getClientByName(payload["source"])
     payload["timestamp"] = time.time()
     if client == None:
-        prCyan("Attempting to create new client,",payload["source"])
+        prCyan("Attempting to create new client, "+payload["source"])
         client = initializeClient(payload["source"])
         if client == None:
             prRed("Failed to create new client")
