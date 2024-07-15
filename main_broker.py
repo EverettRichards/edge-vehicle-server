@@ -67,13 +67,19 @@ class Client:
     def getReputation(self):
         return self.reputation
     
-    def noteOutcome(self,my_vote,verdict):
-        if verdict == "None": return # If nobody knows what's going on, don't change anything
-        if my_vote == verdict:
-            self.reputation += settings["reputation_increment"]
-        else:
-            self.reputation -= settings["reputation_increment"]
-        self.reputation = clamp(self.reputation,settings["min_reputation"],1)
+    def noteOutcome(self,verdicts):
+        # Don't do anything if you made NO decisions
+        if self.getDecision() == None:
+            return
+        # Get list of this client's decisions
+        decisions = self.getDecision()["object_list"]
+        # Compare decisions to actual verdicts. -1 = disagree, 0 = no true verdict, 1 = agree
+        comparisons = [(float(decisions[obj] == verdicts[obj] if verdicts[obj] != "None" else 0.5)-0.5)*2 for obj in object_locations.keys()]
+        # Increment (or decrement) reputation based on comparisons
+        self.reputation += clamp(sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
+
+        # Return the number of decisions that were changed (disagreements)
+        return len([c for c in comparisons if c < -0.5])
 
     def getName(self):
         return self.name
@@ -208,20 +214,7 @@ def getVerdict():
     # Update client reputations using Client object methods
     wrong_decision_count = 0
     for client in activeClients:
-        if client.getDecision() == None:
-            continue
-        for obj in object_locations.keys():
-            true_verdict = verdicts[obj]
-
-            client_verdict = None
-            if client.getDecision()["object_list"][obj] == None:
-                client_verdict = NoneObject[0]
-            else:
-                client_verdict = client.getDecision()["object_list"][obj][0]
-
-            client.noteOutcome(client_verdict,true_verdict)
-            if client_verdict != true_verdict:
-                wrong_decision_count += 1
+        wrong_decision_count += client.noteOutcome(verdicts)
     prPurple(f"\n# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
 
 def didEveryoneDecide():
