@@ -1,6 +1,6 @@
 config = {
-    "broker_IP":broker_IP,
-    "port_Num":port_Num,
+    "broker_IP":"localhost",
+    "port_Num":1883,
     "verdict_min_refresh_time": 0.5, # Min number of seconds before a new verdict can be submitted
     "oldest_allowable_data": 2.5, # Max number of seconds before data is considered too old
     "show_verbose_output": True,
