@@ -68,6 +68,7 @@ class Client:
         return self.reputation
     
     def noteOutcome(self,my_vote,verdict):
+        if verdict == "None": return # If nobody knows what's going on, don't change anything
         if my_vote == verdict:
             self.reputation += settings["reputation_increment"]
         else:
