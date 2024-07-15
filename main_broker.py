@@ -74,7 +74,7 @@ class Client:
         # Get list of this client's decisions
         decisions = self.getDecision()["object_list"]
         # Compare decisions to actual verdicts. -1 = disagree, 0 = no true verdict, 1 = agree
-        comparisons = [(float(decisions[obj] == verdicts[obj] if verdicts[obj] != "None" else 0.5)-0.5)*2 for obj in object_locations.keys()]
+        comparisons = [(float(decisions[obj][0] == verdicts[obj] if verdicts[obj] != "None" else 0.5)-0.5)*2 for obj in object_locations.keys()]
         # Increment (or decrement) reputation based on comparisons
         print("SUM COMP: ",sum(comparisons))
         print(comparisons)
