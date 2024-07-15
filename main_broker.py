@@ -78,7 +78,7 @@ class Client:
         # Increment (or decrement) reputation based on comparisons
         print("SUM COMP: ",sum(comparisons))
         print(comparisons)
-        self.reputation += clamp(sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
+        self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
 
         # Return the number of decisions that were changed (disagreements)
         return len([c for c in comparisons if c < -0.5])
