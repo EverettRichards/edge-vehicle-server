@@ -213,11 +213,14 @@ def getVerdict():
     else:
         prGreen("Submitted verdict: "+verdicts)
 
-    # Update client reputations using Client object methods
-    wrong_decision_count = 0
-    for client in activeClients:
-        wrong_decision_count += client.noteOutcome(verdicts)
-    prPurple(f"\n# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
+    if len(activeClients) > 1:
+        # Update client reputations using Client object methods
+        wrong_decision_count = 0
+        for client in activeClients:
+            wrong_decision_count += client.noteOutcome(verdicts)
+        prPurple(f"\n# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
+    else:
+        prPurple("Only one client, no reputation changes to be made.")
 
 def didEveryoneDecide():
     for client in activeClients:
