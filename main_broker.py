@@ -220,7 +220,7 @@ def getVerdict():
             wrong_decision_count += client.noteOutcome(verdicts)
         prPurple(f"\n# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
     else:
-        prPurple("Only one client, no reputation changes to be made.")
+        prPurple("\nOnly one client, no reputation changes to be made.")
 
 def didEveryoneDecide():
     for client in activeClients:
