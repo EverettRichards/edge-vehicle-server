@@ -16,38 +16,9 @@ client_config_str = client_config_file.read()
 client_config_data = json.loads(client_config_str)
 client_config_file.close()
 
-object_locations = client_config_data["object_locations"]
+empty_locations = client_config_data["empty_parking_spot_locations"]
+occupied_locations = client_config_data["occupied_parking_spot_locations"]
 vehicle_locations = client_config_data["vehicle_locations"]
-
-NoneObject = ["None",0.1,0.0]
-
-
-class Decision:
-    def __init__(self,decision_label,confidence,time_stamp):
-        self.label = decision_label
-        self.confidence = confidence
-        self.time_stamp = time_stamp
-
-    def getLabel(self):
-        return self.label
-    
-    def getConfidence(self):
-        return self.confidence
-    
-    def getTimeStamp(self):
-        return self.time_stamp
-    
-    def setLabel(self,decision_label):
-        self.label = decision_label
-
-    def setConfidence(self,confidence):
-        self.confidence = confidence
-
-    def setTimeStamp(self,time_stamp):
-        self.time_stamp = time_stamp
-    
-    def __str__(self):
-        return self.label + ": " + str(self.confidence)
 
 class Client:
     def __init__(self,client_name):
@@ -68,20 +39,23 @@ class Client:
         return self.reputation
     
     def noteOutcome(self,verdicts):
-        # Don't do anything if you made NO decisions
-        if self.getDecision() == None:
-            return
-        # Get list of this client's decisions
-        decisions = self.getDecision()["object_list"]
-        # Compare decisions to actual verdicts. -1 = disagree, 0 = no true verdict, 1 = agree
-        comparisons = [(float(decisions[obj][0] == verdicts[obj] if verdicts[obj] != "None" else 0.5)-0.5)*2 for obj in object_locations.keys()]
-        # Increment (or decrement) reputation based on comparisons
-        print("SUM COMP: ",sum(comparisons))
-        print(comparisons)
-        self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
+        try:
+            # Don't do anything if you made NO decisions
+            if self.getDecision() == None:
+                return
+            # Get list of this client's decisions
+            decisions = self.getDecision()["object_list"]
+            # Compare decisions to actual verdicts. -1 = disagree, 0 = no true verdict, 1 = agree
+            comparisons = [(float(decisions[obj][0] == verdicts[obj] if verdicts[obj] != "None" else 0.5)-0.5)*2 for obj in object_locations.keys()]
+            # Increment (or decrement) reputation based on comparisons
+            print("SUM COMP: ",sum(comparisons))
+            print(comparisons)
+            self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
 
-        # Return the number of decisions that were changed (disagreements)
-        return len([c for c in comparisons if c < -0.5])
+            # Return the number of decisions that were changed (disagreements)
+            return len([c for c in comparisons if c < -0.5])
+        except Exception:
+            pass
 
     def getName(self):
         return self.name
@@ -148,6 +122,16 @@ def removeClient(client_name):
     except:
         prRed("Failed to remove client. Client not found: "+client_name)
 
+def getClosestObject(object_list,pos):
+    closest_id = 0
+    closest_distance = -1
+    for i,obj in enumerate(object_list):
+        distance = np.sqrt((obj['x']-pos['x'])**2 + (obj['y']-pos['y'])**2)
+        if distance < closest_distance or closest_distance == -1:
+            closest_distance = distance
+            closest_id = i
+    return closest_id
+
 def getVerdict():
     global last_verdict_time
     NOW = time.time()
@@ -159,9 +143,8 @@ def getVerdict():
 
     # Initialize a list of blank Default Dictionaries to count occurrences of each decision
     global dd
-    object_counts = {}
-    for obj in object_locations.keys():
-        object_counts[obj] = dd(int)
+    object_counts = dd(int)
+    license_plates = ["EMPTY"] * len(empty_locations)
 
     # Clear the output log
     print("\033[H\033[J", end="")
@@ -180,15 +163,16 @@ def getVerdict():
             continue
         # Get the dictionary of detected objects
         detected_objects = decision["object_list"]
-        # Add the decision, using confidence level as the weight
-        #counts[decision.getLabel()] += decision.getConfidence() * client.getReputation()
-        ##########################################
-        # NEW LOGIC
-        for obj in object_locations.keys():
-            this_dd = object_counts[obj]
-            chosen_obj = detected_objects[obj] or NoneObject
-            this_dd[chosen_obj[0]] += chosen_obj[1] * client.getReputation() * (1/np.log(chosen_obj[2])) # Confidence * Reputation * (1/log(distance))
-        ##########################################
+
+        for qr in detected_objects:
+            if qr['text'] == "EMPTY":
+                closest_spot = getClosestObject(empty_locations,qr['position'])
+                object_counts[closest_spot] -= 1
+            else:
+                closest_spot = getClosestObject(occupied_locations,qr['position'])
+                object_counts[closest_spot] += 1
+                license_plates[closest_spot] = qr['text']
+        '''
         # Verbose output
         if settings["show_verbose_output"]:
             output_str = f"@{client.getName()} (rep={client.getReputation():.3f}):"
@@ -196,12 +180,16 @@ def getVerdict():
                 if not obj: output_str += f" {name}=None ..."
                 else: output_str += f" {name}={obj[0]} ({obj[1]*100:.1f}%) ..."
             prYellow(output_str)
+        '''
     
     # Determine the most confident decisions for each object
     verdicts = {}
-    for obj,this_dd in object_counts.items():
-        verdicts[obj] = max(this_dd,key=this_dd.get)
-    #verdict = f"{max(counts,key=counts.get)}"
+    for i in range(len(empty_locations)):
+        count = object_counts[i]
+        if count>=0:
+            verdicts[str(i)] = license_plates[i]
+        else:
+            verdicts[str(i)] = "EMPTY"
     
     # Publish the verdict
     publish(main_client,"verdict",{"message":verdicts})
