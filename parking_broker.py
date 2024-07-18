@@ -11,7 +11,7 @@ broker_IP = "localhost"
 port_Num = 1883
 last_verdict_time = 0.0
 
-client_config_file = open("client_config.json","r")
+client_config_file = open("parking_config.json","r")
 client_config_str = client_config_file.read()
 client_config_data = json.loads(client_config_str)
 client_config_file.close()
