@@ -132,6 +132,9 @@ def getClosestObject(object_list,pos):
             closest_id = i
     return closest_id
 
+def get_qr_output(qr):
+    return f"{getGreen(qr['text'])} (x={getCyan(qr['position']['x']):.2f},y={getCyan(qr['position']['y']):.2f},|d|={getCyan(qr['distance']):.2f})"
+
 def getVerdict():
     global last_verdict_time
     NOW = time.time()
@@ -175,8 +178,8 @@ def getVerdict():
         
         # Verbose output
         if settings["show_verbose_output"]:
-            prYellow(output_str = f"@{client.getName()} (rep={client.getReputation():.3f}): {', '.join([qr['text'] for qr in detected_objects])}")
-        # example: @euclid (rep=0.500): ABCD123, IJKL456, XY12ZA3
+            prYellow(output_str = f"@{client.getName()} (rep={client.getReputation():.3f}): {', '.join([get_qr_output(qr) for qr in detected_objects])}")
+        # example: @euclid (rep=0.500): ABCD123 (x=4.56,y=-6.40, |d|=8.41), IJKL456, XY12ZA3
     
     # Determine the most confident decisions for each object
     verdicts = {}
