@@ -172,15 +172,11 @@ def getVerdict():
                 closest_spot = getClosestObject(occupied_locations,qr['position'])
                 object_counts[closest_spot] += 1
                 license_plates[closest_spot] = qr['text']
-        '''
+        
         # Verbose output
         if settings["show_verbose_output"]:
-            output_str = f"@{client.getName()} (rep={client.getReputation():.3f}):"
-            for name,obj in detected_objects.items():
-                if not obj: output_str += f" {name}=None ..."
-                else: output_str += f" {name}={obj[0]} ({obj[1]*100:.1f}%) ..."
-            prYellow(output_str)
-        '''
+            prYellow(output_str = f"@{client.getName()} (rep={client.getReputation():.3f}): {', '.join([qr['text'] for qr in detected_objects])}")
+        # example: @euclid (rep=0.500): ABCD123, IJKL456, XY12ZA3
     
     # Determine the most confident decisions for each object
     verdicts = {}
