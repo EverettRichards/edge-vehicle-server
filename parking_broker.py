@@ -185,7 +185,7 @@ def getVerdict():
     verdicts = {}
     for i in range(len(empty_locations)):
         count = object_counts[i]
-        if count>=0:
+        if count>0:
             verdicts[str(i)] = license_plates[i]
         else:
             verdicts[str(i)] = "EMPTY"

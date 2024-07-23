@@ -11,17 +11,17 @@
     "image_height": 480,
 
     "empty_parking_spot_locations": [
-        {"x":5.5,"y":5.25},
-        {"x":5.5,"y":1.75},
-        {"x":5.5,"y":-1.75},
-        {"x":5.5,"y":-5.25}
+        {"x":25,"y":18},
+        {"x":25,"y":21.5},
+        {"x":25,"y":25},
+        {"x":25,"y":28.5}
     ],
 
     "occupied_parking_spot_locations": [
-        {"x":3.5,"y":5.25},
-        {"x":3.5,"y":1.75},
-        {"x":3.5,"y":-1.75},
-        {"x":3.5,"y":-5.25}
+        {"x":23,"y":18},
+        {"x":23,"y":21.5},
+        {"x":23,"y":25},
+        {"x":23,"y":28.5}
     ],
 
     "vehicle_locations": {
@@ -30,28 +30,32 @@
             "name": "euclid",
             "x": 0.0,
             "y": -6.0,
-            "theta": 0.0
+            "car_angle": 0.0,
+            "camera_angle": 0.0
         },
 
         "watson": {
             "name": "watson",
-            "x": -10.0,
-            "y": 0.0,
-            "theta": 0.0
+            "x": 4.0,
+            "y": 8.0,
+            "car_angle": 90.0,
+            "camera_angle": 45.0
         },
 
         "riemann": {
             "name": "riemann",
             "x": 1.0,
             "y": 2.0,
-            "theta": 45.0
+            "car_angle": 0.0,
+            "camera_angle": 0.0
         },
 
         "galileo": {
             "name": "galileo",
             "x": 0.0,
             "y": 0.0,
-            "theta": 0.0
+            "car_angle": 0.0,
+            "camera_angle": 0.0
         }
 
     }
