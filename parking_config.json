@@ -39,7 +39,7 @@
             "x": 18,
             "y": 34,
             "car_angle": 270,
-            "camera_angle": 37.5
+            "camera_angle": 38
         },
 
         "riemann": {
@@ -47,7 +47,7 @@
             "x": 24,
             "y": 28,
             "car_angle": 90,
-            "camera_angle": -82.5
+            "camera_angle": -83
         },
 
         "galileo": {
