@@ -28,34 +28,34 @@
 
         "euclid": {
             "name": "euclid",
-            "x": 24,
-            "y": 16,
+            "x": 20,
+            "y": 18,
             "car_angle": 90,
-            "camera_angle": -57
+            "camera_angle": -63
         },
 
         "watson": {
             "name": "watson",
             "x": 18,
-            "y": 34,
+            "y": 32,
             "car_angle": 270,
-            "camera_angle": 38
+            "camera_angle": 45
         },
 
         "riemann": {
             "name": "riemann",
-            "x": 24,
+            "x": 22,
             "y": 28,
-            "car_angle": 90,
-            "camera_angle": -83
+            "car_angle": 180,
+            "camera_angle": -12
         },
 
         "galileo": {
             "name": "galileo",
-            "x": 16,
-            "y": 44,
-            "car_angle": 270,
-            "camera_angle": 30
+            "x": 32,
+            "y": 28,
+            "car_angle": 180,
+            "camera_angle": -6
         }
 
     }

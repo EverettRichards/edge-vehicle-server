@@ -195,7 +195,7 @@ def getVerdict():
         object_counts[closest_spot] += v['count']
         license_plates[closest_spot] = qr['text']
         # Output:
-        print(f"Consensus: {getGreen(i)} is at ({getCyan(np.round(mean_x,2))},{getCyan(np.round(mean_y,2))})")
+        print(f"Consensus: {getGreen(i)} is in spot {getYellow(closest_spot)} ({getCyan(np.round(mean_x,2))},{getCyan(np.round(mean_y,2))})")
     
     # Determine the most confident decisions for each object
     verdicts = {}
