@@ -159,10 +159,12 @@ def getVerdict():
         decision = client.getDecision()
         # Throw out expired decisions
         if decision == None or decision["timestamp"] < NOW - settings["oldest_allowable_data"]:
+            print(f"Skipping client: {client.getName()}")
             continue
         # Get the dictionary of detected objects
         detected_objects = decision["object_list"]
 
+        # Vote!
         for qr in detected_objects:
             if qr['text'] == "EMPTY":
                 closest_spot = getClosestObject(empty_locations,qr['position'])
