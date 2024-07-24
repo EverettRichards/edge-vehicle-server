@@ -178,7 +178,7 @@ def getVerdict():
         
         # Verbose output
         if settings["show_verbose_output"]:
-            prYellow(output_str = f"@{client.getName()} (rep={client.getReputation():.3f}): {', '.join([get_qr_output(qr) for qr in detected_objects])}")
+            prYellow(f"@{client.getName()} (rep={client.getReputation():.3f}): {', '.join([get_qr_output(qr) for qr in detected_objects])}")
         # example: @euclid (rep=0.500): ABCD123 (x=4.56,y=-6.40, |d|=8.41), IJKL456, XY12ZA3
     
     # Determine the most confident decisions for each object
