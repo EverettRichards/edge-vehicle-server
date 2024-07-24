@@ -45,9 +45,9 @@ class Client:
             if self.getDecision() == None:
                 return
             #self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
-
+            dec = self.getDecision()['object_list']
             # Return the number of decisions that were changed (disagreements)
-            val = len(empty_locations) - sum([1 for i in range(len(empty_locations)) if verdicts[str(i)] == self.getDecision()["object_list"][i]["text"]])
+            val = len(empty_locations) - len(dec)
         except Exception as e:
             print(e)
         finally:
@@ -128,9 +128,6 @@ def getClosestObject(object_list,pos):
             closest_id = i
     return closest_id
 
-def get_qr_output(qr):
-    print(f"--> {getGreen(qr['text'])} (x={getCyan(np.floor(qr['position']['x']))},y={getCyan(np.floor(qr['position']['y']))},|d|={getCyan(qr['distance'])})")
-
 def getVerdict():
     global last_verdict_time
     NOW = time.time()
@@ -181,8 +178,11 @@ def getVerdict():
         # Verbose output
         if settings["show_verbose_output"]:
             prYellow(f"@{client.getName()} (rep={client.getReputation():.3f}):")
-            for qr in detected_objects:
-                get_qr_output(qr)
+            if len(detected_objects) > 0:
+                for qr in detected_objects:
+                    print(f"--> {getGreen(qr['text'])} (x={getCyan(np.floor(qr['position']['x']))},y={getCyan(np.floor(qr['position']['y']))},|d|={getCyan(qr['distance'])})")
+            else:
+                print(f"--> {getRed('No QR codes detected')}")
         # example: @euclid (rep=0.500): ABCD123 (x=4.56,y=-6.40, |d|=8.41), IJKL456, XY12ZA3
 
     # Find average position for each detected license plate, and locate based on that
