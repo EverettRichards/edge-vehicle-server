@@ -44,17 +44,10 @@ class Client:
             # Don't do anything if you made NO decisions
             if self.getDecision() == None:
                 return
-            # Get list of this client's decisions
-            decisions = self.getDecision()["object_list"]
-            # Compare decisions to actual verdicts. -1 = disagree, 0 = no true verdict, 1 = agree
-            comparisons = [(float(decisions[obj][0] == verdicts[obj] if verdicts[obj] != "None" else 0.5)-0.5)*2 for obj in empty_locations.keys()]
-            # Increment (or decrement) reputation based on comparisons
-            print("SUM COMP: ",sum(comparisons))
-            print(comparisons)
-            self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
+            #self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
 
             # Return the number of decisions that were changed (disagreements)
-            val = len([c for c in comparisons if c < -0.5])
+            val = len(empty_locations) - sum([1 for i in range(len(empty_locations)) if verdicts[str(i)] == self.getDecision()["object_list"][i]["text"]])
         except Exception as e:
             print(e)
         finally:
@@ -136,7 +129,7 @@ def getClosestObject(object_list,pos):
     return closest_id
 
 def get_qr_output(qr):
-    return "{getGreen(qr['text'])} (x={getCyan(qr['position']['x']):.2f},y={getCyan(qr['position']['y']):.2f},|d|={getCyan(qr['distance']):.2f})"
+    print(f"--> {getGreen(qr['text'])} (x={getCyan(qr['position']['x']):.2f},y={getCyan(qr['position']['y']):.2f},|d|={getCyan(qr['distance']):.2f})")
 
 def getVerdict():
     global last_verdict_time
@@ -181,7 +174,9 @@ def getVerdict():
         
         # Verbose output
         if settings["show_verbose_output"]:
-            prYellow(f"@{client.getName()} (rep={client.getReputation():.3f}): {', '.join([get_qr_output(qr) for qr in detected_objects])}")
+            prYellow(f"@{client.getName()} (rep={client.getReputation():.3f}):")
+            for qr in detected_objects:
+                get_qr_output(qr)
         # example: @euclid (rep=0.500): ABCD123 (x=4.56,y=-6.40, |d|=8.41), IJKL456, XY12ZA3
     
     # Determine the most confident decisions for each object
