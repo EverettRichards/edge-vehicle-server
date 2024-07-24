@@ -171,7 +171,7 @@ def getVerdict():
                 closest_spot = getClosestObject(empty_locations,qr['position'])
                 object_counts[closest_spot] -= 1
             else:
-                if not position_tally[qr['text']]:
+                if qr['text'] not in position_tally.keys():
                     position_tally[qr['text']] = {'x':0,'y':0,'count':0}
 
                 position_tally[qr['text']]['x'] += qr['position']['x']
