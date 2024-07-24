@@ -142,8 +142,10 @@ def getVerdict():
 
     # Initialize a list of blank Default Dictionaries to count occurrences of each decision
     global dd
-    object_counts = dd(int)
+    object_counts = dd(int) # Voting registry
     license_plates = ["EMPTY"] * len(empty_locations)
+
+    position_tally = {}
 
     # Clear the output log
     print("\033[H\033[J", end="")
@@ -154,7 +156,6 @@ def getVerdict():
         print("Getting verdict for t ="+str(NOW))
         print("-"*40)
 
-    # Count the number of each decision made
     for client in activeClients:
         decision = client.getDecision()
         # Throw out expired decisions
@@ -164,15 +165,26 @@ def getVerdict():
         # Get the dictionary of detected objects
         detected_objects = decision["object_list"]
 
-        # Vote!
+        # Go through each detected object and tally up the position
         for qr in detected_objects:
             if qr['text'] == "EMPTY":
                 closest_spot = getClosestObject(empty_locations,qr['position'])
                 object_counts[closest_spot] -= 1
             else:
-                closest_spot = getClosestObject(occupied_locations,qr['position'])
-                object_counts[closest_spot] += 1
-                license_plates[closest_spot] = qr['text']
+                if not position_tally[qr['text']]:
+                    position_tally[qr['text']] = {'x':0,'y':0,'count':0}
+
+                position_tally[qr['text']]['x'] += qr['position']['x']
+                position_tally[qr['text']]['y'] += qr['position']['y']
+                position_tally[qr['text']]['count'] += 1
+
+        # Find average position for each detected license plate, and locate based on that
+        for i,v in position_tally.items():
+            mean_x = position_tally[i]['x'] / v['count']
+            mean_y = position_tally[i]['y'] / v['count']
+            closest_spot = getClosestObject(occupied_locations,{'x':mean_x,'y':mean_y})
+            object_counts[closest_spot] += v['count']
+            license_plates[closest_spot] = qr['text']
         
         # Verbose output
         if settings["show_verbose_output"]:
