@@ -39,6 +39,7 @@ class Client:
         return self.reputation
     
     def noteOutcome(self,verdicts):
+        val = 0
         try:
             # Don't do anything if you made NO decisions
             if self.getDecision() == None:
@@ -53,9 +54,11 @@ class Client:
             self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
 
             # Return the number of decisions that were changed (disagreements)
-            return len([c for c in comparisons if c < -0.5])
-        except Exception:
-            pass
+            val = len([c for c in comparisons if c < -0.5])
+        except Exception as e:
+            print(e)
+        finally:
+            return val
 
     def getName(self):
         return self.name
@@ -204,7 +207,8 @@ def getVerdict():
         # Update client reputations using Client object methods
         wrong_decision_count = 0
         for client in activeClients:
-            wrong_decision_count += client.noteOutcome(verdicts)
+            outcome = client.noteOutcome(verdicts)
+            wrong_decision_count += (outcome if outcome else 0)
         prPurple(f"\n# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(object_locations)}")
     else:
         prPurple("\nOnly one client, no reputation changes to be made.")
