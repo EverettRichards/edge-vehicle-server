@@ -180,10 +180,12 @@ def getVerdict():
             prYellow(f"@{client.getName()} (rep={client.getReputation():.3f}):")
             if len(detected_objects) > 0:
                 for qr in detected_objects:
-                    print(f"--> {getGreen(qr['text'])} (x={getCyan(np.floor(qr['position']['x']))},y={getCyan(np.floor(qr['position']['y']))},|d|={getCyan(qr['distance'])})")
+                    print(f"--> {getGreen(qr['text'])} (x={getCyan(np.round(qr['position']['x'],2))},y={getCyan(np.round(qr['position']['y'],2))},|d|={getCyan(np.round(qr['distance'],2))})")
             else:
                 print(f"--> {getRed('No QR codes detected')}")
         # example: @euclid (rep=0.500): ABCD123 (x=4.56,y=-6.40, |d|=8.41), IJKL456, XY12ZA3
+
+    print() # Get that nice, sweet newline!
 
     # Find average position for each detected license plate, and locate based on that
     for i,v in position_tally.items():
@@ -192,7 +194,8 @@ def getVerdict():
         closest_spot = getClosestObject(occupied_locations,{'x':mean_x,'y':mean_y})
         object_counts[closest_spot] += v['count']
         license_plates[closest_spot] = qr['text']
-        print(f"Consensus: {i} is at ({mean_x:.2f},{mean_y:.2f})")
+        # Output:
+        print(f"Consensus: {getGreen(i)} is at ({getCyan(np.round(mean_x,2))},{getCyan(np.round(mean_y,2))})")
     
     # Determine the most confident decisions for each object
     verdicts = {}
@@ -206,12 +209,12 @@ def getVerdict():
     # Publish the verdict
     publish(main_client,"verdict",{"message":verdicts})
 
-    print() # Get that nice, sweet newline!
-    if settings["show_verbose_output"]:
+    #print() # Get that nice, sweet newline!
+    '''if settings["show_verbose_output"]:
         for obj in verdicts.keys():
             prGreen(f"$Object '{obj}' is: '{verdicts[obj]}'")
     else:
-        prGreen("Submitted verdict: "+verdicts)
+        prGreen("Submitted verdict: "+verdicts)'''
 
     if len(activeClients) > 1:
         # Update client reputations using Client object methods
