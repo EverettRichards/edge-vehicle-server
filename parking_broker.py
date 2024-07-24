@@ -177,14 +177,6 @@ def getVerdict():
                 position_tally[qr['text']]['x'] += qr['position']['x']
                 position_tally[qr['text']]['y'] += qr['position']['y']
                 position_tally[qr['text']]['count'] += 1
-
-        # Find average position for each detected license plate, and locate based on that
-        for i,v in position_tally.items():
-            mean_x = position_tally[i]['x'] / v['count']
-            mean_y = position_tally[i]['y'] / v['count']
-            closest_spot = getClosestObject(occupied_locations,{'x':mean_x,'y':mean_y})
-            object_counts[closest_spot] += v['count']
-            license_plates[closest_spot] = qr['text']
         
         # Verbose output
         if settings["show_verbose_output"]:
@@ -192,6 +184,15 @@ def getVerdict():
             for qr in detected_objects:
                 get_qr_output(qr)
         # example: @euclid (rep=0.500): ABCD123 (x=4.56,y=-6.40, |d|=8.41), IJKL456, XY12ZA3
+
+    # Find average position for each detected license plate, and locate based on that
+    for i,v in position_tally.items():
+        mean_x = position_tally[i]['x'] / v['count']
+        mean_y = position_tally[i]['y'] / v['count']
+        closest_spot = getClosestObject(occupied_locations,{'x':mean_x,'y':mean_y})
+        object_counts[closest_spot] += v['count']
+        license_plates[closest_spot] = qr['text']
+        print(f"Consensus: {i} is at ({mean_x:.2f},{mean_y:.2f})")
     
     # Determine the most confident decisions for each object
     verdicts = {}
