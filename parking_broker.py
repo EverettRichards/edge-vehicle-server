@@ -133,7 +133,7 @@ def getClosestObject(object_list,pos):
     return closest_id
 
 def get_qr_output(qr):
-    return f"{getGreen(qr['text'])} (x={getCyan(qr['position']['x']):.2f},y={getCyan(qr['position']['y']):.2f},|d|={getCyan(qr['distance']):.2f})"
+    return "{getGreen(qr['text'])} (x={getCyan(qr['position']['x']):.2f},y={getCyan(qr['position']['y']):.2f},|d|={getCyan(qr['distance']):.2f})"
 
 def getVerdict():
     global last_verdict_time
