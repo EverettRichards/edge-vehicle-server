@@ -37,7 +37,7 @@
         "watson": {
             "name": "watson",
             "x": 18,
-            "y": 32,
+            "y": 36,
             "car_angle": 270,
             "camera_angle": 75
         },
