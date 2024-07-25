@@ -187,6 +187,8 @@ def getVerdict():
 
     print() # Get that nice, sweet newline!
 
+    # IDEA: Use a queue to keep track of decisions, such that no parking spot can have multiple labels in it at once
+
     # Find average position for each detected license plate, and locate based on that
     for i,v in position_tally.items():
         mean_x = position_tally[i]['x'] / v['count']

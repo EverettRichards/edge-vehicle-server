@@ -68,20 +68,24 @@ class Client:
         return self.reputation
     
     def noteOutcome(self,verdicts):
-        # Don't do anything if you made NO decisions
-        if self.getDecision() == None:
-            return
-        # Get list of this client's decisions
-        decisions = self.getDecision()["object_list"]
-        # Compare decisions to actual verdicts. -1 = disagree, 0 = no true verdict, 1 = agree
-        comparisons = [(float(decisions[obj][0] == verdicts[obj] if verdicts[obj] != "None" else 0.5)-0.5)*2 for obj in object_locations.keys()]
-        # Increment (or decrement) reputation based on comparisons
-        print("SUM COMP: ",sum(comparisons))
-        print(comparisons)
-        self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
-
-        # Return the number of decisions that were changed (disagreements)
-        return len([c for c in comparisons if c < -0.5])
+        output = 0
+        try:
+            # Don't do anything if you made NO decisions
+            if self.getDecision() == None:
+                return
+            # Get list of this client's decisions
+            decisions = self.getDecision()["object_list"]
+            # Compare decisions to actual verdicts. -1 = disagree, 0 = no true verdict, 1 = agree
+            comparisons = [(float(decisions[obj][0] == verdicts[obj] if verdicts[obj] != "None" else 0.5)-0.5)*2 for obj in object_locations.keys()]
+            # Increment (or decrement) reputation based on comparisons
+            print("SUM COMP: ",sum(comparisons))
+            print(comparisons)
+            self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
+            output = len([c for c in comparisons if c < -0.5])
+        except Exception as e:
+            print(e)
+        finally:
+            return output
 
     def getName(self):
         return self.name

@@ -11,10 +11,10 @@
 
     "object_locations": {
 
-        "A": {
-            "name": "A",
-            "x": 1.0,
-            "y": 2.0
+        "box": {
+            "name": "box",
+            "x": 10,
+            "y": 27
         },
 
         "B": {
@@ -41,31 +41,34 @@
 
         "euclid": {
             "name": "euclid",
-            "x": 1.0,
-            "y": 2.0,
-            "theta": 45.0
+            "x": 20,
+            "y": 18,
+            "car_angle": 90,
+            "camera_angle": -63
         },
 
         "watson": {
             "name": "watson",
-            "x": 1.0,
-            "y": 2.0,
-            "theta": 45.0
+            "x": 18,
+            "y": 36,
+            "car_angle": 270,
+            "camera_angle": 75
         },
 
         "riemann": {
             "name": "riemann",
-            "x": 1.0,
-            "y": 2.0,
-            "theta": 45.0
+            "x": 22,
+            "y": 28,
+            "car_angle": 180,
+            "camera_angle": -12
         },
 
         "galileo": {
             "name": "galileo",
-            "x": 1.0,
-            "y": 2.0,
-            "theta": 45.0
+            "x": 32,
+            "y": 28,
+            "car_angle": 180,
+            "camera_angle": -6
         }
 
-    }
 }
