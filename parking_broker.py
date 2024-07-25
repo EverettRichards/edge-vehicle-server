@@ -6,6 +6,7 @@ import time
 import numpy as np
 from colors import *
 from server_config import config as settings
+from time import sleep as wait
 
 broker_IP = "localhost"
 port_Num = 1883
@@ -178,6 +179,7 @@ def getVerdict():
             publish(main_client,"finished",{"message":"I'm done!"})
             # Display the config data:
             print(f"Config data: {client_config_data}")
+            #wait(1)
             exit(0)
         verdict_id = -1
         return
