@@ -53,7 +53,7 @@ class Client:
         return self.reputation
     
     def getAccuracyReport(self):
-        return f"Accuracy of last {getYellow(len(self.decision_history))} votes: {getGreen(np.round(np.mean(self.decision_history)*100,2))}%" if len(self.decision_history) > 0 else "No decisions made yet."
+        return f"Accuracy of last {getYellow(len(self.decision_history))} votes: {getGreen(np.round(np.mean(self.decision_history)*100,3))}%" if len(self.decision_history) > 0 else "No decisions made yet."
     
     def noteOutcome(self,verdicts):
         val = 0
@@ -170,6 +170,17 @@ def getDistance(x1,y1,x2,y2):
 def getVerdict():
     global verdict_id
     global last_verdict_time
+
+    # Exit out of the loop after all the necessary data has been compiled!
+    if verdict_id > client_config_data["max_decision_history"] + 15 or verdict_id<0:
+        if verdict_id > 0:
+            # Tell the clients that the data collection is done. Communication is key! :)
+            publish(client,"finished",{"message":"I'm done!"})
+            # Display the config data:
+            print(f"Config data: {client_config_data}")
+            exit(0)
+        verdict_id = -1
+        return
 
     NOW = time.time()
     if (NOW - last_verdict_time) < settings["verdict_min_refresh_time"]:
