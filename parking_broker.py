@@ -52,7 +52,7 @@ class Client:
         return self.reputation
     
     def getAccuracyReport(self):
-        return f"Accuracy of last {len(self.decision_history)} votes: {getGreen(np.round(np.mean(self.decision_history)*100,2))}%" if len(self.decision_history) > 0 else "No decisions made yet."
+        return f"Accuracy of last {getYellow(len(self.decision_history))} votes: {getGreen(np.round(np.mean(self.decision_history)*100,2))}%" if len(self.decision_history) > 0 else "No decisions made yet."
     
     def noteOutcome(self,verdicts):
         val = 0
@@ -216,7 +216,7 @@ def getVerdict():
         
         # Verbose output
         if settings["show_verbose_output"]:
-            prYellow(f"@{client.getName()} (rep={client.getReputation():.3f}) ({client.getAccuracyReport()}):")
+            print(f"@{getPurple(client.getName())} (rep={getYellow(np.round(client.getReputation(),3))}) ({client.getAccuracyReport()}):")
             if len(detected_objects) > 0:
                 for qr in detected_objects:
                     print(f"--> {getGreen(qr['text'])} (x={getCyan(np.round(qr['position']['x'],2))},y={getCyan(np.round(qr['position']['y'],2))},|d|={getCyan(np.round(qr['distance'],2))})")
@@ -299,7 +299,7 @@ def getVerdict():
         # Print the decision report
         print_decision_report()
     else:
-        prPurple("\nOnly one client, no reputation changes to be made.")
+        prPurple("Only one client, no reputation changes to be made.")
 
     client.noteOutcome(verdicts)
 
