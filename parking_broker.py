@@ -128,6 +128,9 @@ def getClosestObject(object_list,pos):
             closest_id = i
     return closest_id
 
+def getDistance(x1,y1,x2,y2):
+    return np.sqrt((x1-x2)**2 + (y1-y2)**2)
+
 def getVerdict():
     global last_verdict_time
     NOW = time.time()
@@ -188,23 +191,64 @@ def getVerdict():
     print() # Get that nice, sweet newline!
 
     # IDEA: Use a queue to keep track of decisions, such that no parking spot can have multiple labels in it at once
+    
+    # Record table of average positions for each detected license plate
+    stack = []
+    taken_spots = [{'position':x,'plate':None} for x in occupied_locations]
 
-    # Find average position for each detected license plate, and locate based on that
-    for i,v in position_tally.items():
-        mean_x = position_tally[i]['x'] / v['count']
-        mean_y = position_tally[i]['y'] / v['count']
-        closest_spot = getClosestObject(occupied_locations,{'x':mean_x,'y':mean_y})
-        object_counts[closest_spot] += v['count']
-        license_plates[closest_spot] = qr['text']
-        # Output:
-        print(f"Consensus: {getGreen(i)} is in spot {getYellow(closest_spot)} ({getCyan(np.round(mean_x,2))},{getCyan(np.round(mean_y,2))})")
+    for plate,val in position_tally.items():
+        mean_x = val['x'] / val['count']
+        mean_y = val['y'] / val['count']
+        stack.append([plate,mean_x,mean_y])
+
+    while len(stack) > 0:
+        this_plate = stack.pop()
+        plate,mean_x,mean_y = this_plate
+        closest_spot = None
+        closest_dist = None
+        for i,spot in enumerate(taken_spots):
+            # Distance from the mean position of the license plate to the center of the parking spot
+            dist = getDistance(spot['position']['x'],spot['position']['y'],mean_x,mean_y)
+            # Only consider spots that would actually make an improvement
+            if closest_dist == None or dist < closest_dist:
+                if spot['plate'] == None: # If the spot is empty, just take it
+                        closest_dist = dist
+                        closest_spot = i
+                else: # If the spot is taken, only take it if the current plate is closer than the one already there
+                    if dist < getDistance(spot['position']['x'],spot['position']['y'],spot['plate'][1],spot['plate'][2]):
+                        closest_dist = dist
+                        closest_spot = i
+
+        closest = taken_spots[closest_spot]
+
+        # If replacing an old item, put it back into the stack
+        if closest['plate'] != None:
+            stack.append(closest['plate'])
+
+        closest['plate'] = this_plate
+
+    if settings["show_verbose_output"]:
+        for i,spot in enumerate(taken_spots):
+            if spot['plate'] != None:
+                plate,mean_x,mean_y = spot['plate']
+                print(f"({getYellow(i)}) Consensus: {getGreen(plate)} ({getCyan(np.round(mean_x,2))},{getCyan(np.round(mean_y,2))})")
+            else:
+                print(f"({getYellow(i)}) Consensus: {getRed('EMPTY')}")
     
     # Determine the most confident decisions for each object
     verdicts = {}
-    for i in range(len(empty_locations)):
+    '''for i in range(len(empty_locations)):
         count = object_counts[i]
         if count>0:
             verdicts[str(i)] = license_plates[i]
+        else:
+            verdicts[str(i)] = "EMPTY"
+    '''
+    # Summarize the final verdicts in a simpler format
+    for i,spot in enumerate(taken_spots):
+        if spot['plate'] != None:
+            plate,mean_x,mean_y = spot['plate']
+            verdicts[str(i)] = plate
         else:
             verdicts[str(i)] = "EMPTY"
     
