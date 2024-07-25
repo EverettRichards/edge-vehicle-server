@@ -179,7 +179,7 @@ def getVerdict():
             publish(main_client,"finished",{"message":"I'm done!"})
             # Display the config data:
             print(f"Config data: {client_config_data}")
-            #wait(1)
+            wait(1)
             exit(0)
         verdict_id = -1
         return
@@ -371,7 +371,7 @@ CLIENT.on_message = on_message
 main_client = CLIENT
 
 # Set the will message, when the Raspberry Pi is powered off, or the network is interrupted abnormally, it will send the will message to other clients
-CLIENT.will_set('msg_B2V', encodePayload({"message":"I'm offline"}), qos=0, retain=False)
+CLIENT.will_set('finished', encodePayload({"message":"I'm offline"}), qos=0, retain=False)
 
 # Create connection, the three parameters are broker address, broker port number, and keep-alive time respectively
 CLIENT.connect(broker_IP, port_Num, keepalive=60)
