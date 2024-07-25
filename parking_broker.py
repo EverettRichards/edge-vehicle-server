@@ -193,7 +193,7 @@ def getVerdict():
     # Display separator for verdict presentation
     if settings["show_verbose_output"]:
         print("-"*40)
-        print(f"Getting verdict #{getPurple(verdict_id)} (t={getCyan(np.round(NOW,3))})")
+        print(f"Getting verdict #{getPurple(verdict_id)} (t=...{getCyan(np.round(NOW%10000,3))}s)")
         print("-"*40)
 
     for client in activeClients:
