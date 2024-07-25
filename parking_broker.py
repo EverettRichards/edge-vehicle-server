@@ -175,7 +175,7 @@ def getVerdict():
     if verdict_id > client_config_data["max_decision_history"] + 15 or verdict_id<0:
         if verdict_id > 0:
             # Tell the clients that the data collection is done. Communication is key! :)
-            publish(client,"finished",{"message":"I'm done!"})
+            publish(main_client,"finished",{"message":"I'm done!"})
             # Display the config data:
             print(f"Config data: {client_config_data}")
             exit(0)
