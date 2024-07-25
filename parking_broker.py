@@ -294,19 +294,14 @@ def getVerdict():
     # Log the decision
     log_decision(verdicts)
 
-    # Print the decision report
     print()
-    print_decision_report()
-
     if len(activeClients) > 1:
-        # Update client reputations using Client object methods
-        wrong_decision_count = 0
-        for client in activeClients:
-            outcome = client.noteOutcome(verdicts)
-            wrong_decision_count += (outcome if outcome else 0)
-        prPurple(f"\n# of clients(x)decisions who had their minds changed: {wrong_decision_count}/{len(activeClients)*len(empty_locations)}")
+        # Print the decision report
+        print_decision_report()
     else:
         prPurple("\nOnly one client, no reputation changes to be made.")
+
+    client.noteOutcome(verdicts)
 
 def didEveryoneDecide():
     for client in activeClients:
