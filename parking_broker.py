@@ -22,6 +22,7 @@ truth_values = client_config_data["true_parking_occupants"]
 vehicle_locations = client_config_data["vehicle_locations"]
 
 decision_history = [] # Contents look like: 0.75, 0.67, ...
+verdict_id = 0
 
 def log_decision(verdicts):
     accuracy = len([v for i,v in verdicts.items() if truth_values[int(i)]==v]) / len(verdicts)
@@ -167,7 +168,9 @@ def getDistance(x1,y1,x2,y2):
     return np.sqrt((x1-x2)**2 + (y1-y2)**2)
 
 def getVerdict():
+    global verdict_id
     global last_verdict_time
+
     NOW = time.time()
     if (NOW - last_verdict_time) < settings["verdict_min_refresh_time"]:
         print(f"Returning. Now: {NOW}, Last: {last_verdict_time}")
@@ -175,6 +178,7 @@ def getVerdict():
     
     # Refresh the last verdict time
     last_verdict_time = NOW
+    verdict_id += 1 # Increment the verdict ID
 
     # Initialize a list of blank Default Dictionaries to count occurrences of each decision
     global dd
@@ -189,7 +193,7 @@ def getVerdict():
     # Display separator for verdict presentation
     if settings["show_verbose_output"]:
         print("-"*40)
-        print("Getting verdict for t ="+str(NOW))
+        print(f"Getting verdict #{getPurple(verdict_id)} (t={getCyan(np.round(NOW),3)})")
         print("-"*40)
 
     for client in activeClients:
