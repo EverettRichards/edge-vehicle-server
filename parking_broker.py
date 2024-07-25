@@ -178,7 +178,7 @@ def getVerdict():
             # Tell the clients that the data collection is done. Communication is key! :)
             publish(main_client,"finished",{"message":"I'm done!"})
             # Display the config data:
-            print(f"Config data: {client_config_data}")
+            print(f"\nConfig data: {getCyan(client_config_data)}")
             wait(1)
             exit(0)
         verdict_id = -1
