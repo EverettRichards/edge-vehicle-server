@@ -21,7 +21,6 @@ vehicle_locations = client_config_data["vehicle_locations"]
 
 NoneObject = ["None",0.1,0.0]
 
-
 class Decision:
     def __init__(self,decision_label,confidence,time_stamp):
         self.label = decision_label
@@ -95,7 +94,6 @@ class Client:
 
     def __repr__(self):
         return self.name + ": " + str(self.decision)
-
 
 main_client = None
 

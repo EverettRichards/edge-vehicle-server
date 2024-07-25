@@ -18,7 +18,19 @@ client_config_file.close()
 
 empty_locations = client_config_data["empty_parking_spot_locations"]
 occupied_locations = client_config_data["occupied_parking_spot_locations"]
+truth_values = client_config_data["true_parking_occupants"]
 vehicle_locations = client_config_data["vehicle_locations"]
+
+decision_history = [] # Contents look like: 0.75, 0.67, ...
+
+def log_decision(verdicts):
+    accuracy = len([v for i,v in verdicts.items() if truth_values[int(i)]==v]) / len(verdicts)
+    decision_history.append(accuracy)
+    if len(decision_history) > settings["max_decision_history"]:
+        decision_history.pop(0)
+
+def print_decision_report():
+    print(f"Accuracy in last {len(decision_history)} verdicts: {getGreen(np.round(np.mean(decision_history)*100,2))}%")
 
 class Client:
     def __init__(self,client_name):
@@ -231,9 +243,9 @@ def getVerdict():
         for i,spot in enumerate(taken_spots):
             if spot['plate'] != None:
                 plate,mean_x,mean_y = spot['plate']
-                print(f"({getYellow(i)}) Consensus: {getGreen(plate)} ({getCyan(np.round(mean_x,2))},{getCyan(np.round(mean_y,2))})")
+                print(f"{getYellow(i)}) Consensus: {getGreen(plate)} ({getCyan(np.round(mean_x,2))},{getCyan(np.round(mean_y,2))})")
             else:
-                print(f"({getYellow(i)}) Consensus: {getRed('EMPTY')}")
+                print(f"{getYellow(i)}) Consensus: {getRed('EMPTY')}")
     
     # Determine the most confident decisions for each object
     verdicts = {}
@@ -255,12 +267,11 @@ def getVerdict():
     # Publish the verdict
     publish(main_client,"verdict",{"message":verdicts})
 
-    #print() # Get that nice, sweet newline!
-    '''if settings["show_verbose_output"]:
-        for obj in verdicts.keys():
-            prGreen(f"$Object '{obj}' is: '{verdicts[obj]}'")
-    else:
-        prGreen("Submitted verdict: "+verdicts)'''
+    # Log the decision
+    log_decision(verdicts)
+
+    # Print the decision report
+    print_decision_report()
 
     if len(activeClients) > 1:
         # Update client reputations using Client object methods

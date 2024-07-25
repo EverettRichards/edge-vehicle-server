@@ -1,6 +1,8 @@
 {
-    "submission_interval": 1,
+    "submission_interval": 0.5,
     "show_verbose": false,
+
+    "max_decision_history": 100,
 
     "horizontal_FOV": 62.2,
     "vertical_FOV": 48.8,
@@ -22,6 +24,13 @@
         {"x":9.5,"y":24},
         {"x":9.5,"y":27.5},
         {"x":9.5,"y":31}
+    ],
+
+    "true_parking_occupants": [
+        "A1B2C3D",
+        "EMPTY",
+        "ABCD123",
+        "EFGH456"
     ],
 
     "vehicle_locations": {
