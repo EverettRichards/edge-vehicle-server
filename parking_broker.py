@@ -56,14 +56,24 @@ class Client:
     
     def noteOutcome(self,verdicts):
         val = 0
-        # Update history...
+        # Update accuracy history...
         dec = self.decision
         if dec != None:
             dec = dec['object_list']
-            val = len([v for i,v in verdicts.items() if dec[int(i)]!=v]) / len(verdicts)
-            self.decision_history.append(self.decision)
+            val = 0
+            for obj in dec:
+                if obj['text'] == "EMPTY":
+                    closest_spot = getClosestObject(empty_locations,obj['position'])
+                    if verdicts[str(closest_spot)] == "EMPTY":
+                        val += 1
+                else:
+                    if verdicts[str(getClosestObject(occupied_locations,obj['position']))] == obj['text']:
+                        val += 1
+            self.decision_history.append(val / len(verdicts))
+            # Trim the decision history to prevent memory leakage
             if len(self.decision_history) > client_config_data["max_decision_history"]:
                 self.decision_history.pop(0)
+
         # Update reputation...
         try:
             # Don't do anything if you made NO decisions
