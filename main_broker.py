@@ -154,6 +154,7 @@ def getVerdict():
     global last_verdict_time
     NOW = time.time()
     if (NOW - last_verdict_time) < settings["verdict_min_refresh_time"]:
+        print(f"Returning. Now: {NOW}, Last: {last_verdict_time}")
         return
     
     # Refresh the last verdict time

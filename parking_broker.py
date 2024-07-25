@@ -30,13 +30,14 @@ def log_decision(verdicts):
         decision_history.pop(0)
 
 def print_decision_report():
-    print(f"Accuracy in last {len(decision_history)} verdicts: {getGreen(np.round(np.mean(decision_history)*100,2))}%")
+    print(f"Mean accuracy in last {getYellow(len(decision_history))} verdicts: {getGreen(np.round(np.mean(decision_history)*100,2))}%")
 
 class Client:
     def __init__(self,client_name):
         self.name = client_name
         self.decision = None
         self.reputation = 0.5
+        self.decision_history = []
 
     def makeDecision(self,decision):
         self.decision = decision
@@ -50,8 +51,20 @@ class Client:
     def getReputation(self):
         return self.reputation
     
+    def getAccuracyReport(self):
+        return f"Accuracy of last {len(self.decision_history)} votes: {getGreen(np.round(np.mean(self.decision_history)*100,2))}%" if len(self.decision_history) > 0 else "No decisions made yet."
+    
     def noteOutcome(self,verdicts):
         val = 0
+        # Update history...
+        dec = self.decision
+        if dec != None:
+            dec = dec['object_list']
+            val = len([v for i,v in verdicts.items() if dec[int(i)]!=v]) / len(verdicts)
+            self.decision_history.append(self.decision)
+            if len(self.decision_history) > client_config_data["max_decision_history"]:
+                self.decision_history.pop(0)
+        # Update reputation...
         try:
             # Don't do anything if you made NO decisions
             if self.getDecision() == None:
@@ -147,6 +160,7 @@ def getVerdict():
     global last_verdict_time
     NOW = time.time()
     if (NOW - last_verdict_time) < settings["verdict_min_refresh_time"]:
+        print(f"Returning. Now: {NOW}, Last: {last_verdict_time}")
         return
     
     # Refresh the last verdict time
@@ -192,7 +206,7 @@ def getVerdict():
         
         # Verbose output
         if settings["show_verbose_output"]:
-            prYellow(f"@{client.getName()} (rep={client.getReputation():.3f}):")
+            prYellow(f"@{client.getName()} (rep={client.getReputation():.3f}) ({client.getAccuracyReport()}):")
             if len(detected_objects) > 0:
                 for qr in detected_objects:
                     print(f"--> {getGreen(qr['text'])} (x={getCyan(np.round(qr['position']['x'],2))},y={getCyan(np.round(qr['position']['y'],2))},|d|={getCyan(np.round(qr['distance'],2))})")
@@ -271,6 +285,7 @@ def getVerdict():
     log_decision(verdicts)
 
     # Print the decision report
+    print()
     print_decision_report()
 
     if len(activeClients) > 1:
