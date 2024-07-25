@@ -301,7 +301,8 @@ def getVerdict():
     else:
         prPurple("Only one client, no reputation changes to be made.")
 
-    client.noteOutcome(verdicts)
+    for client in activeClients:
+        client.noteOutcome(verdicts)
 
 def didEveryoneDecide():
     for client in activeClients:
