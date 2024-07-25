@@ -32,7 +32,7 @@ def log_decision(verdicts):
         decision_history.pop(0)
 
 def print_decision_report():
-    print(f"Mean accuracy in last {getYellow(len(decision_history))} verdicts: {getGreen(np.round(np.mean(decision_history)*100,2))}%")
+    print(f"Mean accuracy in last {getYellow(len(decision_history))} verdicts: {getGreen(np.round(np.mean(decision_history)*100,3))}%")
 
 class Client:
     def __init__(self,client_name):

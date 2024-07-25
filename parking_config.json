@@ -20,17 +20,17 @@
     ],
 
     "occupied_parking_spot_locations": [
-        {"x":9.5,"y":20.5},
-        {"x":9.5,"y":24},
-        {"x":9.5,"y":27.5},
-        {"x":9.5,"y":31}
+        {"x":10,"y":20.5},
+        {"x":10,"y":24},
+        {"x":10,"y":27.5},
+        {"x":10,"y":31}
     ],
 
     "true_parking_occupants": [
-        "A1B2C3D",
         "EMPTY",
+        "EFGH456",
         "ABCD123",
-        "EFGH456"
+        "EMPTY"
     ],
 
     "vehicle_locations": {
