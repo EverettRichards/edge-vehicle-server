@@ -26,7 +26,7 @@ decision_history = [] # Contents look like: 0.75, 0.67, ...
 def log_decision(verdicts):
     accuracy = len([v for i,v in verdicts.items() if truth_values[int(i)]==v]) / len(verdicts)
     decision_history.append(accuracy)
-    if len(decision_history) > settings["max_decision_history"]:
+    if len(decision_history) > client_config_data["max_decision_history"]:
         decision_history.pop(0)
 
 def print_decision_report():
