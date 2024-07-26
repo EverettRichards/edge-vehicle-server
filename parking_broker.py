@@ -33,8 +33,9 @@ def log_decision(verdicts):
 
 def print_decision_report():
     print(f"Mean accuracy in last {getYellow(len(decision_history))} verdicts: {getGreen(np.round(np.mean(decision_history)*100,3))}%")
-    ratio = (len(decision_history)-10)/client_config_data['max_decision_history']*50
-    print(f"[{'|'*int(ratio)}{'.'*(50-int(ratio))}]")
+    ratio = (len(decision_history)-10)/(client_config_data['max_decision_history']-10)*50
+    print(f"[{'#'*int(ratio)}{'.'*(50-int(ratio))}]")
+    print(f"Progress: {getYellow(len(decision_history)-10)}/{client_config_data['max_decision_history']} ({getGreen(np.round((len(decision_history)-10)/client_config_data['max_decision_history']*100,3))}%). ETA: {getYellow(np.round((client_config_data['max_decision_history']-len(decision_history)+10)*settings['verdict_min_refresh_time'],3))}s")
 
 class Client:
     def __init__(self,client_name):
