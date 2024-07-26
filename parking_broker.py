@@ -173,7 +173,7 @@ def getVerdict():
     global last_verdict_time
 
     # Exit out of the loop after all the necessary data has been compiled!
-    if verdict_id > client_config_data["max_decision_history"] + 15 or verdict_id<0:
+    if verdict_id > client_config_data["max_decision_history"] + 10 or verdict_id<0:
         if verdict_id > 0:
             # Tell the clients that the data collection is done. Communication is key! :)
             publish(main_client,"finished",{"message":"I'm done!"})
