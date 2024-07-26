@@ -1,7 +1,7 @@
 {
     "submission_interval": 0.5,
     "capture_interval": 0.1,
-    "use_updated_client_method": false,
+    "use_updated_client_method": true,
     "show_verbose": false,
 
     "max_decision_history": 200,
@@ -29,10 +29,10 @@
     ],
 
     "true_parking_occupants": [
+        "EMPTY",
         "EFGH456",
-        "EMPTY",
-        "EMPTY",
-        "ABCD123"
+        "ABCD123",
+        "EMPTY"
     ],
 
     "vehicle_locations": {
