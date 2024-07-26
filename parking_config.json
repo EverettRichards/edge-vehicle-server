@@ -15,58 +15,70 @@
     "image_height": 480,
 
     "empty_parking_spot_locations": [
-        {"x":7.5,"y":20.5},
-        {"x":7.5,"y":24},
-        {"x":7.5,"y":27.5},
-        {"x":7.5,"y":31}
+        {"x":6,"y":20},
+        {"x":6,"y":23},
+        {"x":6,"y":26},
+        {"x":6,"y":29.5},
+        {"x":6,"y":34},
+        {"x":6,"y":37.5},
+        {"x":6,"y":41},
+        {"x":6,"y":44.5}
     ],
 
     "occupied_parking_spot_locations": [
-        {"x":10,"y":20.5},
-        {"x":10,"y":24},
-        {"x":10,"y":27.5},
-        {"x":10,"y":31}
+        {"x":10,"y":20},
+        {"x":10,"y":23},
+        {"x":10,"y":26},
+        {"x":10,"y":29.5},
+        {"x":10,"y":34},
+        {"x":10,"y":8},
+        {"x":10,"y":41},
+        {"x":10,"y":45}
     ],
 
     "true_parking_occupants": [
+        "MNOP101",
+        "QRST999",
+        "YZYZ369",
+        "UVWX321",
+        "EMPTY",
         "EFGH456",
         "EMPTY",
-        "A1B2C3D",
-        "ABCD123"
+        "A1B2C3D"
     ],
 
     "vehicle_locations": {
 
         "euclid": {
             "name": "euclid",
-            "x": 20,
+            "x": 24,
             "y": 18,
             "car_angle": 90,
-            "camera_angle": -63
+            "camera_angle": -75
         },
 
         "watson": {
             "name": "watson",
-            "x": 18,
-            "y": 36,
+            "x": 16,
+            "y": 46,
             "car_angle": 270,
             "camera_angle": 75
         },
 
         "riemann": {
             "name": "riemann",
-            "x": 22,
-            "y": 28,
-            "car_angle": 180,
-            "camera_angle": -12
+            "x": 24,
+            "y": 42,
+            "car_angle": 90,
+            "camera_angle": 37
         },
 
         "galileo": {
             "name": "galileo",
-            "x": 32,
-            "y": 22,
-            "car_angle": 180,
-            "camera_angle": 2
+            "x": 16,
+            "y": 32,
+            "car_angle": 270,
+            "camera_angle": 70
         }
 
     }

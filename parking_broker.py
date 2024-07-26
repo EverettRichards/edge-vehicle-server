@@ -12,7 +12,7 @@ broker_IP = "localhost"
 port_Num = 1883
 last_verdict_time = 0.0
 
-broker_start_time = time.time()
+broker_start_time = 0
 
 client_config_file = open("parking_config.json","r")
 client_config_str = client_config_file.read()
@@ -34,6 +34,7 @@ def log_decision(verdicts):
         decision_history.pop(0)
 
 def print_decision_report():
+    global broker_start_time
     print(f"Mean accuracy in last {getYellow(len(decision_history))} verdicts: {getGreen(np.round(np.mean(decision_history)*100,3))}%")
     ratio = (len(decision_history)-10)/(client_config_data['max_decision_history']-10)*50
     avg_time_per_verdict = (time.time()-broker_start_time) / len(decision_history)
@@ -358,6 +359,9 @@ def interpretData(payload):
 
 # The callback function, it will be triggered when receiving messages
 def on_message(CLIENT, userdata, msg):
+    global broker_start_time
+    if broker_start_time == 0:
+        broker_start_time = time.time()
     # Turn from byte array to string text
     payload = msg.payload.decode("utf-8")
     # Turn from string text to data structure
