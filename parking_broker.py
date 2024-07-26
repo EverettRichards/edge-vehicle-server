@@ -12,6 +12,8 @@ broker_IP = "localhost"
 port_Num = 1883
 last_verdict_time = 0.0
 
+broker_start_time = time.time()
+
 client_config_file = open("parking_config.json","r")
 client_config_str = client_config_file.read()
 client_config_data = json.loads(client_config_str)
@@ -34,8 +36,11 @@ def log_decision(verdicts):
 def print_decision_report():
     print(f"Mean accuracy in last {getYellow(len(decision_history))} verdicts: {getGreen(np.round(np.mean(decision_history)*100,3))}%")
     ratio = (len(decision_history)-10)/(client_config_data['max_decision_history']-10)*50
-    print(f"[{'#'*int(ratio)}{'.'*(50-int(ratio))}]")
-    print(f"Progress: {getYellow(len(decision_history)-10)}/{client_config_data['max_decision_history']} ({getGreen(np.round((len(decision_history)-10)/client_config_data['max_decision_history']*100,3))}%). ETA: {getYellow(np.round((client_config_data['max_decision_history']-len(decision_history)+10)*settings['verdict_min_refresh_time'],3))}s")
+    avg_time_per_verdict = (time.time()-broker_start_time) / len(decision_history)
+    if avg_time_per_verdict < 1:
+        avg_time_per_verdict = 1
+    print(f"[{getCyan('#'*int(ratio))}{'.'*(50-int(ratio))}]")
+    print(f"Progress: {getYellow(verdict_id-10)}/{client_config_data['max_decision_history']} ({getGreen(np.round((verdict_id-10)/client_config_data['max_decision_history']*100,3))}%). ETA: {getYellow(np.round((client_config_data['max_decision_history']-verdict_id+10)*avg_time_per_verdict,3))}s")
 
 class Client:
     def __init__(self,client_name):
@@ -141,6 +146,7 @@ def initializeClient(client_name):
                 raise Exception("Client already exists")
         new_client = Client(client_name)
         activeClients.append(new_client)
+        activeClients.sort(key=lambda x: x.name)
         issueConfig()
         prCyan("Added client: "+client_name)
         return new_client

@@ -29,10 +29,10 @@
     ],
 
     "true_parking_occupants": [
-        "EMPTY",
         "EFGH456",
-        "ABCD123",
-        "EMPTY"
+        "EMPTY",
+        "A1B2C3D",
+        "ABCD123"
     ],
 
     "vehicle_locations": {
