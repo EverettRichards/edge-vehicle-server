@@ -37,7 +37,7 @@ def print_decision_report():
     print(f"Mean accuracy in last {getYellow(len(decision_history))} verdicts: {getGreen(np.round(np.mean(decision_history)*100,3))}%")
     ratio = (len(decision_history)-10)/(client_config_data['max_decision_history']-10)*50
     avg_time_per_verdict = (time.time()-broker_start_time) / len(decision_history)
-    if avg_time_per_verdict < 1:
+    if avg_time_per_verdict < 0.1 or avg_time_per_verdict > 2:
         avg_time_per_verdict = 1
     print(f"[{getCyan('#'*int(ratio))}{'.'*(50-int(ratio))}]")
     print(f"Progress: {getYellow(verdict_id-10)}/{client_config_data['max_decision_history']} ({getGreen(np.round((verdict_id-10)/client_config_data['max_decision_history']*100,3))}%). ETA: {getYellow(np.round((client_config_data['max_decision_history']-verdict_id+10)*avg_time_per_verdict,3))}s")
