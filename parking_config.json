@@ -1,5 +1,6 @@
 {
     "submission_interval": 0.5,
+    "capture_interval": 0.1,
     "show_verbose": false,
 
     "max_decision_history": 200,

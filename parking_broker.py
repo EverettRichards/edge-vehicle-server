@@ -312,11 +312,12 @@ def getVerdict():
     log_decision(verdicts)
 
     print()
-    if len(activeClients) > 1:
+    print_decision_report()
+    '''if len(activeClients) > 1:
         # Print the decision report
         print_decision_report()
     else:
-        prPurple("Only one client, no reputation changes to be made.")
+        prPurple("Only one client, no reputation changes to be made.")'''
 
     for client in activeClients:
         client.noteOutcome(verdicts)
