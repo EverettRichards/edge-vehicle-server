@@ -374,12 +374,12 @@ def getVerdict():
     publish(main_client,"verdict",{"message":verdicts})
 
     # Log the decision
-    log_decision(verdicts) # TODO: Update log decision method
+    log_decision(verdicts)
 
     print_decision_report()
 
     for client in activeClients:
-        client.noteOutcome(verdicts) # TODO: Update noteOutcome method
+        client.noteOutcome(verdicts)
 
 def didEveryoneDecide():
     for client in activeClients:
