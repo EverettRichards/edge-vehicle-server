@@ -14,7 +14,7 @@ last_verdict_time = 0.0
 
 broker_start_time = 0
 
-client_config_file = open("parking_config.json","r")
+client_config_file = open("consolidated_config.json","r")
 client_config_str = client_config_file.read()
 client_config_data = json.loads(client_config_str)
 client_config_file.close()
@@ -22,24 +22,40 @@ client_config_file.close()
 empty_locations = client_config_data["empty_parking_spot_locations"]
 occupied_locations = client_config_data["occupied_parking_spot_locations"]
 truth_values = client_config_data["true_parking_occupants"]
+object_locations = client_config_data["object_locations"]
 vehicle_locations = client_config_data["vehicle_locations"]
 
-decision_history = [] # Contents look like: 0.75, 0.67, ...
+NoneObject = ["None",0.1,0.0]
+
+plate_history = [] # Contents look like: 0.75, 0.67, ... THIS is a list of PARKING decisions based on snapshot accuracy %
+object_history = [] # Contents look like: 0.75, 0.67, ... THIS is a list of OBJECT decisions based on snapshot accuracy %
 verdict_id = 0
 
 def log_decision(verdicts):
-    accuracy = len([v for i,v in verdicts.items() if truth_values[int(i)]==v]) / len(verdicts)
-    decision_history.append(accuracy)
-    if len(decision_history) > client_config_data["max_decision_history"]:
-        decision_history.pop(0)
+    # Plates
+    accuracy = len([v for i,v in verdicts["plates"].items() if truth_values[int(i)]==v]) / len(verdicts["plates"])
+    plate_history.append(accuracy)
+    # Objects
+    accuracy = len([v for i,v in verdicts["objects"].items() if object_locations[i]==v]) / len(verdicts["objects"])
+    object_history.append(accuracy)
+    # Clear the oldest piece of data if the log is too long
+    if len(object_history) > client_config_data["max_decision_history"]:
+        object_history.pop(0)
+        plate_history.pop(0)
+
 
 def print_decision_report():
     global broker_start_time
-    print(f"Mean accuracy in last {getYellow(len(decision_history))} verdicts: {getGreen(np.round(np.mean(decision_history)*100,3))}%")
-    ratio = (len(decision_history)-10)/(client_config_data['max_decision_history']-10)*50
-    avg_time_per_verdict = (time.time()-broker_start_time) / len(decision_history)
+    print()
+    # Print the accuracy of all available decisions, for both QR plate detection and object detection
+    print(f"Mean QR PLATE accuracy in last {getYellow(len(plate_history))} verdicts: {getGreen(np.round(np.mean(plate_history)*100,3))}%")
+    print(f"Mean OBJECT accuracy in last {getYellow(len(object_history))} verdicts: {getGreen(np.round(np.mean(object_history)*100,3))}%")
+    # Determine how far along we are in the experiment
+    ratio = (len(plate_history)-10)/(client_config_data['max_decision_history']-10)*50
+    avg_time_per_verdict = (time.time()-broker_start_time) / len(plate_history)
     if avg_time_per_verdict < 0.1 or avg_time_per_verdict > 2:
         avg_time_per_verdict = 1
+    # Progress / status bar
     print(f"[{getCyan('#'*int(ratio))}{'.'*(50-int(ratio))}]")
     print(f"Progress: {getYellow(verdict_id-10)}/{client_config_data['max_decision_history']} ({getGreen(np.round((verdict_id-10)/client_config_data['max_decision_history']*100,3))}%). ETA: {getYellow(np.round((client_config_data['max_decision_history']-verdict_id+10)*avg_time_per_verdict,3))}s")
 
@@ -48,7 +64,8 @@ class Client:
         self.name = client_name
         self.decision = None
         self.reputation = 0.5
-        self.decision_history = []
+        self.plate_history = []
+        self.object_history = []
 
     def makeDecision(self,decision):
         self.decision = decision
@@ -63,27 +80,38 @@ class Client:
         return self.reputation
     
     def getAccuracyReport(self):
-        return f"Accuracy of last {getYellow(len(self.decision_history))} votes: {getGreen(np.round(np.mean(self.decision_history)*100,3))}%" if len(self.decision_history) > 0 else "No decisions made yet."
+        line1 = f"Accuracy of last {getYellow(len(self.plate_history))} PLATE votes: {getGreen(np.round(np.mean(self.plate_history)*100,3))}%"
+        line2 = f"Accuracy of last {getYellow(len(self.object_history))} OBJECT votes: {getGreen(np.round(np.mean(self.object_history)*100,3))}%"
+        return (line1+'\n'+line2) if len(self.plate_history) > 0 else "No decisions made yet."
     
     def noteOutcome(self,verdicts):
         val = 0
         # Update accuracy history...
         dec = self.decision
         if dec != None:
-            dec = dec['object_list']
             val = 0
-            for obj in dec:
+            for obj in dec["parking_list"]:
+                if obj == None:
+                    continue
                 if obj['text'] == "EMPTY":
                     closest_spot = getClosestObject(empty_locations,obj['position'])
-                    if verdicts[str(closest_spot)] == "EMPTY":
+                    if verdicts["plates"][str(closest_spot)] == "EMPTY":
                         val += 1
                 else:
-                    if verdicts[str(getClosestObject(occupied_locations,obj['position']))] == obj['text']:
+                    if verdicts["plates"][str(getClosestObject(occupied_locations,obj['position']))] == obj['text']:
                         val += 1
-            self.decision_history.append(val / len(verdicts))
+            self.plate_history.append(val / len(verdicts["plates"]))
+
+            for id,obj in dec["object_list"].items():
+                if obj == None:
+                    continue
+                if verdicts["objects"][id] == max(obj,key=obj.get):
+                    val += 1
+            self.object_history.append(val / len(verdicts["objects"]))
             # Trim the decision history to prevent memory leakage
-            if len(self.decision_history) > client_config_data["max_decision_history"]:
-                self.decision_history.pop(0)
+            if len(self.plate_history) > client_config_data["max_decision_history"]:
+                self.plate_history.pop(0)
+                self.object_history.pop(0)
 
         # Update reputation...
         try:
@@ -91,7 +119,7 @@ class Client:
             if self.getDecision() == None:
                 return
             #self.reputation = clamp(self.reputation + sum(comparisons) * settings["reputation_increment"], settings["min_reputation"], 1)
-            dec = self.getDecision()['object_list']
+            dec = self.getDecision()['parking_list']
             # Return the number of decisions that were changed (disagreements)
             val = len(empty_locations) - len(dec)
         except Exception as e:
@@ -165,10 +193,10 @@ def removeClient(client_name):
     except:
         prRed("Failed to remove client. Client not found: "+client_name)
 
-def getClosestObject(object_list,pos):
+def getClosestObject(parking_list,pos):
     closest_id = 0
     closest_distance = -1
-    for i,obj in enumerate(object_list):
+    for i,obj in enumerate(parking_list):
         distance = np.sqrt((obj['x']-pos['x'])**2 + (obj['y']-pos['y'])**2)
         if distance < closest_distance or closest_distance == -1:
             closest_distance = distance
@@ -178,11 +206,8 @@ def getClosestObject(object_list,pos):
 def getDistance(x1,y1,x2,y2):
     return np.sqrt((x1-x2)**2 + (y1-y2)**2)
 
-def getVerdict():
+def quitIfExhausted():
     global verdict_id
-    global last_verdict_time
-
-    # Exit out of the loop after all the necessary data has been compiled!
     if verdict_id >= client_config_data["max_decision_history"] + 10 or verdict_id<0:
         if verdict_id > 0:
             # Tell the clients that the data collection is done. Communication is key! :)
@@ -192,78 +217,11 @@ def getVerdict():
             wait(1)
             exit(0)
         verdict_id = -1
-        return
-
-    NOW = time.time()
-    if (NOW - last_verdict_time) < settings["verdict_min_refresh_time"]:
-        print(f"Returning. Now: {NOW}, Last: {last_verdict_time}")
-        return
+        return True
+    else:
+        return False
     
-    # Refresh the last verdict time
-    last_verdict_time = NOW
-    verdict_id += 1 # Increment the verdict ID
-
-    # Initialize a list of blank Default Dictionaries to count occurrences of each decision
-    global dd
-    object_counts = dd(int) # Voting registry
-    license_plates = ["EMPTY"] * len(empty_locations)
-
-    position_tally = {}
-
-    # Clear the output log
-    print("\033[H\033[J", end="")
-
-    # Display separator for verdict presentation
-    if settings["show_verbose_output"]:
-        print("-"*40)
-        print(f"Getting verdict #{getYellow(verdict_id)} (t=...{getCyan(np.round(NOW%10000,3))}s)")
-        print("-"*40)
-
-    for client in activeClients:
-        decision = client.getDecision()
-        # Throw out expired decisions
-        if decision == None or decision["timestamp"] < NOW - settings["oldest_allowable_data"]:
-            print(f"Skipping client: {client.getName()}")
-            continue
-        # Get the dictionary of detected objects
-        detected_objects = decision["object_list"]
-
-        # Go through each detected object and tally up the position
-        for qr in detected_objects:
-            if qr['text'] == "EMPTY":
-                closest_spot = getClosestObject(empty_locations,qr['position'])
-                object_counts[closest_spot] -= 1
-            else:
-                if qr['text'] not in position_tally.keys():
-                    position_tally[qr['text']] = {'x':0,'y':0,'count':0}
-
-                position_tally[qr['text']]['x'] += qr['position']['x']
-                position_tally[qr['text']]['y'] += qr['position']['y']
-                position_tally[qr['text']]['count'] += 1
-        
-        # Verbose output
-        if settings["show_verbose_output"]:
-            print(f"@{getPurple(client.getName())} (rep={getYellow(np.round(client.getReputation(),3))}) ({client.getAccuracyReport()}):")
-            if len(detected_objects) > 0:
-                for qr in detected_objects:
-                    print(f"--> {getGreen(qr['text'])} (x={getCyan(np.round(qr['position']['x'],2))},y={getCyan(np.round(qr['position']['y'],2))},|d|={getCyan(np.round(qr['distance'],2))})")
-            else:
-                print(f"--> {getRed('No QR codes detected')}")
-        # example: @euclid (rep=0.500): ABCD123 (x=4.56,y=-6.40, |d|=8.41), IJKL456, XY12ZA3
-
-    print() # Get that nice, sweet newline!
-
-    # IDEA: Use a queue to keep track of decisions, such that no parking spot can have multiple labels in it at once
-    
-    # Record table of average positions for each detected license plate
-    stack = []
-    taken_spots = [{'position':x,'plate':None} for x in occupied_locations]
-
-    for plate,val in position_tally.items():
-        mean_x = val['x'] / val['count']
-        mean_y = val['y'] / val['count']
-        stack.append([plate,mean_x,mean_y])
-
+def parseStack(stack,taken_spots):
     while len(stack) > 0:
         this_plate = stack.pop()
         plate,mean_x,mean_y = this_plate
@@ -290,6 +248,101 @@ def getVerdict():
 
         closest['plate'] = this_plate
 
+def getVerdict():
+    global last_verdict_time
+    global verdict_id
+
+    # Exit out of the loop after all the necessary data has been compiled!
+    if quitIfExhausted(): return
+
+    NOW = time.time()
+    '''if (NOW - last_verdict_time) < settings["verdict_min_refresh_time"]:
+        print(f"Returning. Now: {NOW}, Last: {last_verdict_time}")
+        return''' # This was to debug the issue of the verdicts being too infrequent
+    
+    # Refresh the last verdict time
+    last_verdict_time = NOW
+    verdict_id += 1 # Increment the verdict ID
+
+    # Initialize a list of blank Default Dictionaries to count occurrences of each decision
+    global dd
+    plate_counts = dd(int)
+    license_plates = ["EMPTY"] * len(empty_locations)
+    # For license plates...
+    position_tally = {}
+
+    # Initialize a dictionary of object identities
+    object_identities = {}
+    for key in object_locations.keys():
+        object_identities[key] = dd(float)
+
+    # Clear the output log
+    print("\033[H\033[J", end="")
+
+    # Display separator for verdict presentation
+    if settings["show_verbose_output"]:
+        print("-"*40)
+        print(f"Getting verdict #{getYellow(verdict_id)} (t=...{getCyan(np.round(NOW%10000,3))}s)")
+        print("-"*40)
+
+    for client in activeClients:
+        local_weight_factor = 1 # This variable will serve as the reliability of the vehicle
+        decision = client.getDecision()
+        # Throw out expired decisions
+        if decision == None or decision["timestamp"] < NOW - settings["oldest_allowable_data"]:
+            print(f"Skipping client: {client.getName()}")
+            continue
+        ############################################################################################################
+        ''' DO OBJECT DETECTION STUFF '''
+        ############################################################################################################
+        for object_id,this_dd in decision["object_list"].items():
+            if this_dd == None:
+                continue
+            for key in this_dd.keys():
+                object_identities[object_id][key] += this_dd[key] * local_weight_factor
+        ############################################################################################################
+        ''' DO LICENSE PLATE STUFF '''
+        ############################################################################################################
+        # Get the list of detected plates
+        detected_plates = decision["parking_list"]
+
+        # Go through each detected plate and tally up the position
+        for qr in detected_plates:
+            if qr['text'] == "EMPTY":
+                closest_spot = getClosestObject(empty_locations,qr['position'])
+                plate_counts[closest_spot] -= 1
+            else:
+                if qr['text'] not in position_tally.keys():
+                    position_tally[qr['text']] = {'x':0,'y':0,'count':0}
+
+                position_tally[qr['text']]['x'] += qr['position']['x']
+                position_tally[qr['text']]['y'] += qr['position']['y']
+                position_tally[qr['text']]['count'] += 1
+
+        # Verbose output
+        if settings["show_verbose_output"]:
+            print(f"@{getPurple(client.getName())} (rep={getYellow(np.round(client.getReputation(),3))}) ({client.getAccuracyReport()}):")
+            if len(detected_plates) > 0:
+                for qr in detected_plates:
+                    print(f"--> {getGreen(qr['text'])} (x={getCyan(np.round(qr['position']['x'],2))},y={getCyan(np.round(qr['position']['y'],2))},|d|={getCyan(np.round(qr['distance'],2))})")
+            else:
+                print(f"--> {getRed('No QR codes detected')}")
+        # example: @euclid (rep=0.500): ABCD123 (x=4.56,y=-6.40, |d|=8.41), IJKL456, XY12ZA3
+
+    print() # Get that nice, sweet newline!
+    
+    # Record table of average positions for each detected license plate
+    stack = []
+    taken_spots = [{'position':x,'plate':None} for x in occupied_locations]
+
+    for plate,val in position_tally.items():
+        mean_x = val['x'] / val['count']
+        mean_y = val['y'] / val['count']
+        stack.append([plate,mean_x,mean_y])
+
+    # Optimize the license plate positions into unique 2D spots. Updates the value of taken_spots
+    parseStack(stack,taken_spots)
+
     if settings["show_verbose_output"]:
         for i,spot in enumerate(taken_spots):
             if spot['plate'] != None:
@@ -298,39 +351,35 @@ def getVerdict():
             else:
                 print(f"{getYellow(i)}) Consensus: {getRed('EMPTY')}")
     
-    # Determine the most confident decisions for each object
-    verdicts = {}
-    '''for i in range(len(empty_locations)):
-        count = object_counts[i]
-        if count>0:
-            verdicts[str(i)] = license_plates[i]
-        else:
-            verdicts[str(i)] = "EMPTY"
-    '''
-    # Summarize the final verdicts in a simpler format
+    # Empty verdicts table
+    plate_verdicts = {}
+    object_verdicts = {}
+    # Summarize the final plate verdicts in a simpler format
     for i,spot in enumerate(taken_spots):
         if spot['plate'] != None:
             plate,mean_x,mean_y = spot['plate']
-            verdicts[str(i)] = plate
+            plate_verdicts[str(i)] = plate
         else:
-            verdicts[str(i)] = "EMPTY"
+            plate_verdicts[str(i)] = "EMPTY"
+    # Update the list of object verdicts
+    for key in object_identities.keys():
+        object_verdicts[key] = max(object_identities[key],key=object_identities[key].get,default=NoneObject)
     
+    verdicts = {
+        "plates":plate_verdicts,
+        "objects":object_verdicts,
+    }
+
     # Publish the verdict
     publish(main_client,"verdict",{"message":verdicts})
 
     # Log the decision
-    log_decision(verdicts)
+    log_decision(verdicts) # TODO: Update log decision method
 
-    print()
     print_decision_report()
-    '''if len(activeClients) > 1:
-        # Print the decision report
-        print_decision_report()
-    else:
-        prPurple("Only one client, no reputation changes to be made.")'''
 
     for client in activeClients:
-        client.noteOutcome(verdicts)
+        client.noteOutcome(verdicts) # TODO: Update noteOutcome method
 
 def didEveryoneDecide():
     for client in activeClients:
