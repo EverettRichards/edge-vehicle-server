@@ -106,7 +106,8 @@ class Client:
                 if obj == None or len(obj)==0:
                     continue
                 my_dec = max(obj,key=obj.get)
-                if my_dec != None and verdicts["objects"][id] == my_dec:
+                if my_dec != None and my_dec != "None" and verdicts["objects"][id] == my_dec:
+                    print(f"ADDING: {my_dec}, {verdicts['objects'][id]}")
                     val += 1
             self.object_history.append(val / len(verdicts["objects"]))
             # Trim the decision history to prevent memory leakage
@@ -378,7 +379,7 @@ def getVerdict():
             if obj == None:
                 print(f"Object {getYellow(i)}: {getRed('None')}")
             else:
-                print(f"Object {getYellow(i)}: {getGreen(obj)}")
+                print(f"Object {getYellow(i)}: {getGreen(obj[0])}")
 
     # Log the decision
     log_decision(verdicts)
