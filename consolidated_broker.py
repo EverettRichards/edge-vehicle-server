@@ -7,6 +7,7 @@ import numpy as np
 from colors import *
 from server_config import config as settings
 from time import sleep as wait
+import argparse
 
 broker_IP = "localhost"
 port_Num = 1883
@@ -30,6 +31,11 @@ NoneObject = ["None",0.1,0.0]
 plate_history = [] # Contents look like: 0.75, 0.67, ... THIS is a list of PARKING decisions based on snapshot accuracy %
 object_history = [] # Contents look like: 0.75, 0.67, ... THIS is a list of OBJECT decisions based on snapshot accuracy %
 verdict_id = 0
+
+parser = argparse.ArgumentParser(description="Consolidated Broker for Parking Lot Data")
+parser.add_argument("-id",type=int,help="Test ID number",default=0)
+args = parser.parse_args()
+test_id = args.id
 
 def log_decision(verdicts):
     # Plates
@@ -216,6 +222,13 @@ def quitIfExhausted():
             publish(main_client,"finished",{"message":"I'm done!"})
             # Display the config data:
             print(f"\nConfig data: {getCyan(client_config_data)}")
+            output_file = open(f"outputs/output_{test_id}.json","w")
+            output_file.write(json.dumps({
+                "plate_history":plate_history,
+                "object_history":object_history,
+                "config":client_config_data,
+                "client_reports": {client.getName(): {"plates":client.plate_history,"objects":client.object_history} for client in activeClients}
+            }))
             wait(1)
             exit(0)
         verdict_id = -1
