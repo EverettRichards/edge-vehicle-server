@@ -4,6 +4,8 @@
     "use_updated_client_method": true,
     "show_verbose": false,
     "do_rapidly_turn": false,
+    "detect_objects": false,
+    "detect_plates": true,
 
     "max_decision_history": 200,
 
