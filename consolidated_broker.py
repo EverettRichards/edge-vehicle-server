@@ -103,7 +103,7 @@ class Client:
             self.plate_history.append(val / len(verdicts["plates"]))
 
             for id,obj in dec["object_list"].items():
-                if obj == None:
+                if obj == None or len(obj)==0:
                     continue
                 if verdicts["objects"][id] == max(obj,key=obj.get):
                     val += 1
