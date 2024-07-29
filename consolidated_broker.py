@@ -105,7 +105,8 @@ class Client:
             for id,obj in dec["object_list"].items():
                 if obj == None or len(obj)==0:
                     continue
-                if verdicts["objects"][id] == max(obj,key=obj.get):
+                my_dec = max(obj,key=obj.get)
+                if my_dec != None and verdicts["objects"][id] == my_dec:
                     val += 1
             self.object_history.append(val / len(verdicts["objects"]))
             # Trim the decision history to prevent memory leakage
@@ -342,14 +343,6 @@ def getVerdict():
 
     # Optimize the license plate positions into unique 2D spots. Updates the value of taken_spots
     parseStack(stack,taken_spots)
-
-    if settings["show_verbose_output"]:
-        for i,spot in enumerate(taken_spots):
-            if spot['plate'] != None:
-                plate,mean_x,mean_y = spot['plate']
-                print(f"{getYellow(i)}) Consensus: {getGreen(plate)} ({getCyan(np.round(mean_x,2))},{getCyan(np.round(mean_y,2))})")
-            else:
-                print(f"{getYellow(i)}) Consensus: {getRed('EMPTY')}")
     
     # Empty verdicts table
     plate_verdicts = {}
@@ -372,6 +365,20 @@ def getVerdict():
 
     # Publish the verdict
     publish(main_client,"verdict",{"message":verdicts})
+
+    if settings["show_verbose_output"]:
+        for i,spot in enumerate(taken_spots):
+            if spot['plate'] != None:
+                plate,mean_x,mean_y = spot['plate']
+                print(f"{getYellow(i+1)}) Consensus: {getGreen(plate)} ({getCyan(np.round(mean_x,2))},{getCyan(np.round(mean_y,2))})")
+            else:
+                print(f"{getYellow(i+1)}) Consensus: {getRed('EMPTY')}")
+        print()
+        for i,obj in object_verdicts.items():
+            if obj == None:
+                print(f"Object {getYellow(i)}: {getRed('None')}")
+            else:
+                print(f"Object {getYellow(i)}: {getGreen(obj)}")
 
     # Log the decision
     log_decision(verdicts)
