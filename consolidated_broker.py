@@ -102,14 +102,14 @@ class Client:
                         val += 1
             self.plate_history.append(val / len(verdicts["plates"]))
 
+            obj_val = 0
             for id,obj in dec["object_list"].items():
                 if obj == None or len(obj)==0:
                     continue
                 my_dec = max(obj,key=obj.get)
                 if my_dec != None and my_dec != "None" and verdicts["objects"][id] == my_dec:
-                    print(f"ADDING: {my_dec}, {verdicts['objects'][id]}")
-                    val += 1
-            self.object_history.append(val / len(verdicts["objects"]))
+                    obj_val += 1
+            self.object_history.append(obj_val / len(verdicts["objects"]))
             # Trim the decision history to prevent memory leakage
             if len(self.plate_history) > client_config_data["max_decision_history"]:
                 self.plate_history.pop(0)
