@@ -40,13 +40,13 @@
     ],
 
     "true_parking_occupants": [
-        "MNOP101",
-        "QRST999",
-        "YZYZ369",
-        "UVWX321",
-        "EMPTY",
         "EFGH456",
+        "MNOP101",
         "EMPTY",
+        "YZYZ369",
+        "EMPTY",
+        "QRST999",
+        "UVWX321",
         "A1B2C3D"
     ],
 
