@@ -40,14 +40,14 @@
     ],
 
     "true_parking_occupants": [
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY"
+        "A1B2C3D",
+        "IJKL789",
+        "ABCD123",
+        "UVWX321",
+        "QRST999",
+        "EFGH456",
+        "YZYZ369",
+        "MNOP101"
     ],
 
     "object_locations": {
