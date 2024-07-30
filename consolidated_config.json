@@ -18,36 +18,38 @@
     "image_height": 480,
 
     "empty_parking_spot_locations": [
-        {"x":2,"y":21},
-        {"x":2,"y":24.5},
-        {"x":2,"y":28},
-        {"x":2,"y":31.5},
-        {"x":2,"y":36},
-        {"x":2,"y":39.5},
-        {"x":2,"y":43},
-        {"x":2,"y":46.5}
+        {"x":9.5,"y":14},
+        {"x":13.0,"y":14},
+        {"x":16.5,"y":14},
+        {"x":20.0,"y":14},
+
+        {"x":9.5,"y":44},
+        {"x":13.0,"y":44},
+        {"x":16.5,"y":44},
+        {"x":20.0,"y":44}
     ],
 
     "occupied_parking_spot_locations": [
-        {"x":6,"y":21},
-        {"x":6,"y":24.5},
-        {"x":6,"y":28},
-        {"x":6,"y":31.5},
-        {"x":6,"y":36},
-        {"x":6,"y":39.5},
-        {"x":6,"y":43},
-        {"x":6,"y":46.5}
+        {"x":9.5,"y":18},
+        {"x":13.0,"y":18},
+        {"x":16.5,"y":18},
+        {"x":20.0,"y":18},
+
+        {"x":9.5,"y":40},
+        {"x":13.0,"y":40},
+        {"x":16.5,"y":40},
+        {"x":20.0,"y":40}
     ],
 
     "true_parking_occupants": [
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY",
-        "EMPTY"
+        "UVWX321",
+        "IJKL789",
+        "A1B2C3D",
+        "ABCD123",
+        "YZYZ369",
+        "EFGH456",
+        "QRST999",
+        "MNOP101"
     ],
 
     "object_locations": {
@@ -74,34 +76,34 @@
 
         "euclid": {
             "name": "euclid",
-            "x": 16,
-            "y": 30,
-            "car_angle": 90,
-            "camera_angle": -88
+            "x": 6,
+            "y": 24,
+            "car_angle": 0,
+            "camera_angle": 57
         },
 
         "watson": {
             "name": "watson",
-            "x": 18,
-            "y": 36,
+            "x": 10,
+            "y": 34,
             "car_angle": 180,
-            "camera_angle": 20
+            "camera_angle": 90
         },
 
         "riemann": {
             "name": "riemann",
-            "x": 10,
-            "y": 50,
-            "car_angle": 270,
-            "camera_angle": 55
+            "x": 24,
+            "y": 34,
+            "car_angle": 180,
+            "camera_angle": 52
         },
 
         "galileo": {
             "name": "galileo",
-            "x": 16,
-            "y": 16,
-            "car_angle": 90,
-            "camera_angle": -50
+            "x": 18,
+            "y": 24,
+            "car_angle": 0,
+            "camera_angle": 80
         }
 
     }
