@@ -1,0 +1,592 @@
+{
+    "object_locations": {
+        "ball": {
+            "identities": [
+                "vase",
+                "sports ball"
+            ],
+            "x": 21,
+            "y": 35
+        },
+        "cup": {
+            "identities": [
+                "cup"
+            ],
+            "x": 19,
+            "y": 45
+        },
+        "mouse": {
+            "identities": [
+                "mouse"
+            ],
+            "x": 15,
+            "y": 41
+        }
+    },
+    "vehicle_locations": {
+        "euclid": {
+            "name": "euclid",
+            "x": 8,
+            "y": 36,
+            "car_angle": 0,
+            "camera_angle": -20
+        },
+        "watson": {
+            "name": "watson",
+            "x": 18,
+            "y": 24,
+            "car_angle": 90,
+            "camera_angle": 5
+        },
+        "riemann": {
+            "name": "riemann",
+            "x": 30,
+            "y": 42,
+            "car_angle": 180,
+            "camera_angle": 3
+        },
+        "galileo": {
+            "name": "galileo",
+            "x": 12,
+            "y": 52,
+            "car_angle": 270,
+            "camera_angle": -32
+        }
+    },
+    "raw_data": {
+        "riemann": [
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.662109375
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.662109375
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.6765625
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.66328125
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.67578125
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.6703125
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.6609375
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.665625
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.6578125
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.65859375
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.66796875
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.6703125
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.671875
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.671875
+                },
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {
+                    "cup": 0.66953125
+                },
+                "mouse": {}
+            }
+        ],
+        "galileo": [
+            {
+                "ball": {
+                    "bottle": 0.07682291666666667,
+                    "mouse": 0.138671875,
+                    "suitcase": 0.07682291666666667,
+                    "chair": 0.07096354166666667,
+                    "vase": 0.3313802083333333,
+                    "dining table": 0.2838541666666667,
+                    "potted plant": 0.21484375,
+                    "cup": 0.08138020833333333
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.6263020833333334,
+                    "chair": 0.07291666666666667
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.3953125,
+                    "dining table": 0.4375,
+                    "potted plant": 0.43515625,
+                    "cup": 0.10234375
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 1.2484375
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.2,
+                    "dining table": 0.446875,
+                    "potted plant": 0.4359375,
+                    "cup": 0.1,
+                    "bowl": 0.1953125
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 1.08984375
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.503125,
+                    "dining table": 0.446875,
+                    "potted plant": 0.440625
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.99609375
+                }
+            },
+            {
+                "ball": {
+                    "cup": 0.09765625,
+                    "potted plant": 0.4421875,
+                    "dining table": 0.4421875,
+                    "vase": 0.4
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.91328125
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.4046875,
+                    "potted plant": 0.45234375,
+                    "dining table": 0.44453125,
+                    "bowl": 0.09765625
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 1.075,
+                    "chair": 0.1609375
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.490625,
+                    "dining table": 0.44921875,
+                    "potted plant": 0.4328125
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.9125,
+                    "chair": 0.08046875
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.490625,
+                    "dining table": 0.446875,
+                    "potted plant": 0.43515625
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.903125
+                }
+            },
+            {
+                "ball": {
+                    "cup": 0.20234375,
+                    "potted plant": 0.45234375,
+                    "dining table": 0.44921875,
+                    "vase": 0.19765625,
+                    "bowl": 0.10234375
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.91328125,
+                    "chair": 0.0828125
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.38515625,
+                    "dining table": 0.4421875,
+                    "potted plant": 0.43984375,
+                    "bowl": 0.1
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.91171875,
+                    "truck": 0.08046875
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.4859375,
+                    "potted plant": 0.4421875,
+                    "dining table": 0.43515625
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.90703125
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.3,
+                    "dining table": 0.43984375,
+                    "potted plant": 0.43515625,
+                    "bowl": 0.1953125
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.91015625,
+                    "chair": 0.16796875
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.290625,
+                    "dining table": 0.4515625,
+                    "potted plant": 0.44765625,
+                    "bowl": 0.1,
+                    "cup": 0.09765625
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.990625
+                }
+            },
+            {
+                "ball": {
+                    "vase": 0.40703125,
+                    "potted plant": 0.4515625,
+                    "dining table": 0.4421875,
+                    "bowl": 0.09765625
+                },
+                "cup": {},
+                "mouse": {
+                    "mouse": 0.98984375,
+                    "chair": 0.08046875
+                }
+            }
+        ],
+        "watson": [
+            {
+                "ball": {
+                    "cup": 0.16861979166666666,
+                    "vase": 0.5149739583333334
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.77578125
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.778125
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.7796875
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.76875
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.78515625
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.77109375
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.76875
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.76875
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.778125
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.77109375
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.7828125
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.778125
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "vase": 0.78359375
+                },
+                "cup": {},
+                "mouse": {}
+            }
+        ],
+        "euclid": [
+            {
+                "ball": {
+                    "person": 0.154296875,
+                    "mouse": 0.08138020833333333
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "person": 0.0828125
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "person": 0.16328125
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {
+                    "person": 0.08046875
+                },
+                "cup": {},
+                "mouse": {}
+            },
+            {
+                "ball": {},
+                "cup": {},
+                "mouse": {}
+            }
+        ]
+    },
+    "config": {
+        "submission_interval": 0.62,
+        "capture_interval": 0.15,
+        "use_updated_client_method": true,
+        "show_verbose": false,
+        "do_rapidly_turn": false,
+        "detect_objects": true,
+        "detect_plates": false,
+        "max_decision_history": 5,
+        "horizontal_FOV": 62.2,
+        "vertical_FOV": 48.8,
+        "angle_threshold": 7.5,
+        "image_width": 640,
+        "image_height": 480,
+        "object_locations": {
+            "ball": {
+                "identities": [
+                    "vase",
+                    "sports ball"
+                ],
+                "x": 21,
+                "y": 35
+            },
+            "cup": {
+                "identities": [
+                    "cup"
+                ],
+                "x": 19,
+                "y": 45
+            },
+            "mouse": {
+                "identities": [
+                    "mouse"
+                ],
+                "x": 15,
+                "y": 41
+            }
+        },
+        "vehicle_locations": {
+            "euclid": {
+                "name": "euclid",
+                "x": 8,
+                "y": 36,
+                "car_angle": 0,
+                "camera_angle": -20
+            },
+            "watson": {
+                "name": "watson",
+                "x": 18,
+                "y": 24,
+                "car_angle": 90,
+                "camera_angle": 5
+            },
+            "riemann": {
+                "name": "riemann",
+                "x": 30,
+                "y": 42,
+                "car_angle": 180,
+                "camera_angle": 3
+            },
+            "galileo": {
+                "name": "galileo",
+                "x": 12,
+                "y": 52,
+                "car_angle": 270,
+                "camera_angle": -32
+            }
+        }
+    },
+    "test_id": 65
+}
