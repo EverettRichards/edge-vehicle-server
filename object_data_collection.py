@@ -243,7 +243,7 @@ def getVerdict():
     # Clear the output log
     print("\033[H\033[J", end="")
 
-    if verdict_id < 10:
+    if verdict_id <= 10:
         print("-"*40)
         print(f"Waiting for verdicts to accumulate ({getCyan(verdict_id)}/10)...")
         print("-"*40)
