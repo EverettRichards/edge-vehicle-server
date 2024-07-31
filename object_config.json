@@ -20,18 +20,18 @@
     "object_locations": {
         "ball": {
             "identities": ["vase", "sports ball"],
-            "x": 21,
-            "y": 35
+            "x": 15,
+            "y": 41
         },
         "cup": {
             "identities": ["cup"],
             "x": 19,
-            "y": 45
+            "y": 37
         },
         "mouse": {
             "identities": ["mouse"],
             "x": 15,
-            "y": 41
+            "y": 33
         }
     },
 

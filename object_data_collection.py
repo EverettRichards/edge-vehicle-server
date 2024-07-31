@@ -250,7 +250,8 @@ def getVerdict():
         return
     else:
         print("-"*40)
-        print(f"Getting verdict #{getYellow(verdict_id-10)} (t=...{getCyan(np.round(NOW%10000,3))}s)")
+        max_dec = client_config_data["max_decision_history"]
+        print(f"Getting verdict #{getYellow(verdict_id-10)}/{max_dec} ({np.round((verdict_id-10)/max_dec,0)}%) (t=...{getCyan(np.round(NOW%10000,3))}s)")
         print("-"*40)
     
     # Initialize a list of blank Default Dictionaries to count occurrences of each decision
