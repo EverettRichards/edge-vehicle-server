@@ -219,7 +219,7 @@ def quitIfExhausted():
                 "test_id":test_id
             }
             output_file = open(f"outputs/objects/output_{test_id}.json","w")
-            output_file.write(json.dumps(pkg))
+            output_file.write(json.dumps(pkg,indent=4))
             wait(1)
             exit(0)
         verdict_id = -1
