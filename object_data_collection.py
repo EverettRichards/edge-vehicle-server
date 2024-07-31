@@ -240,19 +240,21 @@ def getVerdict():
     last_verdict_time = NOW
     verdict_id += 1 # Increment the verdict ID
 
-    if verdict_id < 10: return
-
-    # Initialize a list of blank Default Dictionaries to count occurrences of each decision
-    global dd
-
     # Clear the output log
     print("\033[H\033[J", end="")
 
-    # Display separator for verdict presentation
-    if settings["show_verbose_output"]:
+    if verdict_id < 10:
         print("-"*40)
-        print(f"Getting verdict #{getYellow(verdict_id)} (t=...{getCyan(np.round(NOW%10000,3))}s)")
+        print(f"Waiting for verdicts to accumulate ({getCyan(verdict_id)}/10)...")
         print("-"*40)
+    else:
+        print("-"*40)
+        print(f"Getting verdict #{getYellow(verdict_id-10)} (t=...{getCyan(np.round(NOW%10000,3))}s)")
+        print("-"*40)
+    
+
+    # Initialize a list of blank Default Dictionaries to count occurrences of each decision
+    global dd
 
     for client in activeClients:
         #local_weight_factor = 1 # This variable will serve as the reliability of the vehicle
