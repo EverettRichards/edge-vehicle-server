@@ -256,7 +256,7 @@ def getVerdict():
 
     for client in activeClients:
         #local_weight_factor = 1 # This variable will serve as the reliability of the vehicle
-        decision = client.getDecision()["object_list"]
+        decision = client.getDecision()
         # Throw out expired decisions
         if decision == None or decision["timestamp"] < NOW - settings["oldest_allowable_data"]:
             print(f"Skipping client: {client.getName()}")
@@ -266,9 +266,9 @@ def getVerdict():
         ############################################################################################################
         name = client.getName()
         if name in final_outputs.keys():
-            final_outputs[name].append(decision)
+            final_outputs[name].append(decision["object_list"])
         else:
-            final_outputs[name] = [decision]
+            final_outputs[name] = [decision["object_list"]]
     
 
     
