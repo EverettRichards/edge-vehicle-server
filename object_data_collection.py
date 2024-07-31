@@ -247,6 +247,7 @@ def getVerdict():
         print("-"*40)
         print(f"Waiting for verdicts to accumulate ({getCyan(verdict_id)}/10)...")
         print("-"*40)
+        return
     else:
         print("-"*40)
         print(f"Getting verdict #{getYellow(verdict_id-10)} (t=...{getCyan(np.round(NOW%10000,3))}s)")
