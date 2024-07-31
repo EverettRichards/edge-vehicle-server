@@ -252,7 +252,6 @@ def getVerdict():
         print(f"Getting verdict #{getYellow(verdict_id-10)} (t=...{getCyan(np.round(NOW%10000,3))}s)")
         print("-"*40)
     
-
     # Initialize a list of blank Default Dictionaries to count occurrences of each decision
     global dd
 
