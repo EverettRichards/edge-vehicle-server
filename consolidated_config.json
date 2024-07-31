@@ -53,23 +53,21 @@
     ],
 
     "object_locations": {
-        "box": {
+        "ball": {
+            "identities": ["vase", "sports ball"],
             "x": 10,
             "y": 27
         },
-        "B": {
+        "cup": {
+            "identities": ["cup"],
             "x": 1.0,
             "y": 2.0
         },
-        "C": {
-            "x": 1.0,
-            "y": 2.0
-        },
-        "D": {
+        "mouse": {
+            "identities": ["mouse"],
             "x": 1.0,
             "y": 2.0
         }
-
     },
 
     "vehicle_locations": {
